@@ -7,11 +7,19 @@
 
 package frc.robot;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import frc.robot.Constants.OIConstants;
+import frc.robot.commands.TeleopDriveCommand;
+import frc.robot.subsystems.DriveTrainSubsystem;
+import frc.robot.util.GyroProvider;
+import frc.robot.util.SparkMaxProvider;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -21,9 +29,12 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final DriveTrainSubsystem m_driveTrain;  
+  private final TeleopDriveCommand m_teleopDriveCommand;
+  private final XboxController m_driverController = new XboxController(OIConstants.kPrimaryDriverController);
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final GyroProvider m_gyroProvider;
+  private final SparkMaxProvider m_speedControllerProvider;
 
 
 
@@ -31,8 +42,15 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    boolean isReal = Robot.isReal();
+    m_gyroProvider = new GyroProvider(isReal);
+    m_speedControllerProvider = new SparkMaxProvider(isReal);
+
+    m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider);
+    m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     // Configure the button bindings
     configureButtonBindings();
+    configureDriveTrain(); 
   }
 
   /**
@@ -42,6 +60,18 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    DoubleSupplier leftYJoystick = () -> -m_driverController.getY(Hand.kLeft);
+    DoubleSupplier rightJoystick = () -> m_driverController.getX(Hand.kRight);
+    m_teleopDriveCommand.setControllerSupplier(leftYJoystick, rightJoystick);
+    
+    new JoystickButton(m_driverController, Button.kBumperRight.value)
+    .whenPressed(() -> m_driveTrain.setMaxOutput(0.25))
+    .whenReleased(() -> m_driveTrain.setMaxOutput(1));
+  }
+
+  private void configureDriveTrain()
+  {
+    m_driveTrain.setDefaultCommand(m_teleopDriveCommand);
   }
 
 
@@ -51,7 +81,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    return m_teleopDriveCommand;
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
   }
 }
