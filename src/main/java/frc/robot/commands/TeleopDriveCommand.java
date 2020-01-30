@@ -7,10 +7,12 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
@@ -23,6 +25,9 @@ public class TeleopDriveCommand extends CommandBase {
   // Initialize these so that it is not empty.
   private DoubleSupplier m_leftDoubleSupplier = () -> 0.0;
   private DoubleSupplier m_rightDoubleSupplier = () -> 0.0;
+
+  private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
   /**
    * Creates a new ExampleCommand.
@@ -38,7 +43,7 @@ public class TeleopDriveCommand extends CommandBase {
   public void setControllerSupplier(DoubleSupplier leftDoubleSupplier, DoubleSupplier rightDoubleSupplier) {
     m_leftDoubleSupplier = leftDoubleSupplier;
     m_rightDoubleSupplier = rightDoubleSupplier;
-  }
+  } 
 
   // Called when the command is initially scheduled.
   @Override
@@ -48,7 +53,9 @@ public class TeleopDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_driveTrain.arcadeDrive(m_leftDoubleSupplier.getAsDouble(), m_rightDoubleSupplier.getAsDouble());//m_controller.getY(Hand.kLeft), m_controller.getY(Hand.kRight));
+    double xSpeed = -m_speedLimiter.calculate(m_leftDoubleSupplier.getAsDouble()) * DriveConstants.kMaxSpeed;
+    double rot = -m_rotLimiter.calculate(m_rightDoubleSupplier.getAsDouble()) * DriveConstants.kMaxAngularSpeed;
+    m_driveTrain.arcadeDrive(xSpeed, rot);//m_controller.getY(Hand.kLeft), m_controller.getY(Hand.kRight));
   }
 
   // Called once the command ends or is interrupted.

@@ -29,5 +29,11 @@ public final class Constants {
         public static final double kStabilizationP = 1;
         public static final double kStabilizationI = 0.5;
         public static final double kStabilizationD = 0;
+
+        public static final double kMaxSpeed = 3.0; // meters per second
+        public static final double kMaxAngularSpeed = 2 * Math.PI; // one rotation per second
+      
+        public static final double kTrackWidth = 0.689796288; // meters
+        public static final double kWheelRadius = 0.1524; // meters
     }
 }

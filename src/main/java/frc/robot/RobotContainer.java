@@ -46,7 +46,7 @@ public class RobotContainer {
     m_gyroProvider = new GyroProvider(isReal);
     m_speedControllerProvider = new SparkMaxProvider(isReal);
 
-    m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider);
+    m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     // Configure the button bindings
     configureButtonBindings();
@@ -60,7 +60,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    DoubleSupplier leftYJoystick = () -> -m_driverController.getY(Hand.kLeft);
+    DoubleSupplier leftYJoystick = () -> m_driverController.getY(Hand.kLeft);
     DoubleSupplier rightJoystick = () -> m_driverController.getX(Hand.kRight);
     m_teleopDriveCommand.setControllerSupplier(leftYJoystick, rightJoystick);
     

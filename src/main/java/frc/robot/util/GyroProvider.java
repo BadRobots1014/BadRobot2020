@@ -40,6 +40,14 @@ public class GyroProvider {
         }
     }
 
+    public void reset() {
+        if (m_isReal) {
+            m_realGyro.reset();
+        } else {
+            m_simGyro.reset();
+        }
+    }
+
     public double getTurnRate() {
         if (m_isReal) {
             return m_realGyro.getRate();
