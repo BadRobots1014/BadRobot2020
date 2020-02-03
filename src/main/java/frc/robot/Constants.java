@@ -27,6 +27,7 @@ public final class Constants {
         public static final int kLeftMotor1Port = 2;
         public static final int kLeftMotor2Port = 4;
         public static final int kGathererMotor = 5;
+        public static final int kFeederMotor = 6;
 
         public static final double kStabilizationP = 1;
         public static final double kStabilizationI = 0.5;
