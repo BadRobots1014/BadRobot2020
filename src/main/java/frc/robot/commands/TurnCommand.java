@@ -16,7 +16,8 @@ public class TurnCommand extends CommandBase {
     private final GyroProvider m_gyro;
     private double m_startHeading, m_endHeading;
     private boolean m_deltaHeadingDirection; // true is clockwise
-    private final double m_angle, m_speed, m_threshold;
+    private final double m_angle, m_speed;
+    // private final double m_threshold;
   /**
    * Creates a new TurnCommand.
    */
@@ -25,7 +26,7 @@ public class TurnCommand extends CommandBase {
     m_gyro = gyro;
     m_angle = angle;
     m_speed = speed;
-    m_threshold = threshold;
+    // m_threshold = threshold;
 
     addRequirements(driveTrain);
   }

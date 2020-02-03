@@ -16,10 +16,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
+import frc.robot.subsystems.FeedSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.util.GyroProvider;
 import frc.robot.util.SparkMaxProvider;
@@ -36,8 +38,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveTrainSubsystem m_driveTrain;  
   private final GathererSubsystem m_gathererSubsystem;
+  private final FeedSubsystem m_feedSubsystem;
+
   private final TeleopDriveCommand m_teleopDriveCommand;
   private final GatherCommand m_gatherCommand;
+  private final FeedCommand m_feedCommand;
+
   private final XboxController m_driverController = new XboxController(OIConstants.kDriverController);
   private final XboxController m_attachmentsController = new XboxController(OIConstants.kAttachmentsController);
 
@@ -57,12 +63,15 @@ public class RobotContainer {
 
     m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(34));
+    m_feedSubsystem = new FeedSubsystem(new TalonSRX(21));
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
+    m_feedCommand = new FeedCommand(m_feedSubsystem);
     // Configure the button bindings
     configureButtonBindings();
     configureDriveTrain();
     configureGatherer();
+    configureFeeder();
   }
 
   /**
@@ -106,6 +115,10 @@ public class RobotContainer {
 
   private void configureGatherer() {
     m_gathererSubsystem.setDefaultCommand(m_gatherCommand);
+  }
+
+  private void configureFeeder() {
+    m_feedSubsystem.setDefaultCommand(m_feedCommand);
   }
 
 
