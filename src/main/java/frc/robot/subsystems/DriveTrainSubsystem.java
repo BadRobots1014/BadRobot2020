@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.GyroProvider;
 import frc.robot.util.SparkMaxProvider;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 
 public class DriveTrainSubsystem extends SubsystemBase {
 
@@ -48,8 +50,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
   // Robot characterization suggests that 21.2 is the value to use below for the first argument, 
   // however, this must be done very carefully, as it can make the robot shake violently when starting
   // First, try it without that, then try it
-  private final PIDController m_leftPIDController = new PIDController(5e-5, 0, 0);
-  private final PIDController m_rightPIDController = new PIDController(5e-5, 0, 0);
+  private final PIDController m_leftPIDController = new PIDController(DriveConstants.kLeftP, 0, 0);
+  private final PIDController m_rightPIDController = new PIDController(DriveConstants.kRightP, 0, 0);
 
   private final DifferentialDriveKinematics m_kinematics
       = new DifferentialDriveKinematics(DriveConstants.kTrackWidth);
@@ -59,7 +61,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.151, 2.78, 0.409);
 
-  private final double encoderConstant = (1 / DriveConstants.kDriveGearing) * DriveConstants.kWheelRadius * Math.PI;
+  // The encoderConstant is the factor that converts the angular units given by
+  // the encoder to the angular units covered by the wheels.
+  private final double encoderConstant = (1 / DriveConstants.kDriveGearing) * DriveConstants.kWheelDiameter * Math.PI;
 
 
 //  // The motors on the left side of the drive.
@@ -94,10 +98,26 @@ public class DriveTrainSubsystem extends SubsystemBase {
     
   }
 
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+
   public Rotation2d getAngle() {
     // Negating the angle because WPILib gyros are CW positive.
     return Rotation2d.fromDegrees(-m_gyro.getHeading());
   }
+
+   /**
+   * Controls the left and right sides of the drive directly with voltages.
+   *
+   * @param leftVolts  the commanded left output
+   * @param rightVolts the commanded right output
+   */
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    m_leftGroup.setVoltage(leftVolts);
+    m_rightGroup.setVoltage(-rightVolts);
+  }
+
 
   public double getLeftEncoderPosition() {
     return m_leftEncoder.getPosition() * encoderConstant;
@@ -112,6 +132,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
     return m_rightEncoder.getVelocity() * encoderConstant / 60;
   }
 
+
+
    /**
    * Sets the desired wheel speeds.
    *
@@ -125,6 +147,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         speeds.leftMetersPerSecond);
     final double rightOutput = m_rightPIDController.calculate(getRightEncoderVelocity(),
         speeds.rightMetersPerSecond);
+
     m_leftGroup.setVoltage(leftOutput + leftFeedforward);
     m_rightGroup.setVoltage(rightOutput + rightFeedforward);
   }
@@ -146,6 +169,26 @@ public class DriveTrainSubsystem extends SubsystemBase {
     arcadeDrive(xSpeed, rot);
   }
 
+    /**
+   * Returns the current wheel speeds of the robot.
+   *
+   * @return The current wheel speeds.
+   */
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(getLeftEncoderVelocity(), getRightEncoderVelocity());
+  }
+
+
+  /*
+  public void followTrajectory(Pose2d currentPosition, Pose2d goalPosition, double targetLinearVelocity, double targetAngularVelocity) {
+    // TODO: 
+  }
+  */
+
+  public DifferentialDriveKinematics getDriveKinematics() {
+    return m_kinematics;
+  }
+
   @Override
   public void periodic() {
     // Use these to verify the conversion factors are correct
@@ -153,6 +196,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Right Encoder Position", getRightEncoderPosition());
     SmartDashboard.putNumber("Left Encoder Velocity", getLeftEncoderVelocity());
     SmartDashboard.putNumber("Right Encoder Velocity", getRightEncoderVelocity());
+
+    SmartDashboard.putString("Pose", m_odometry.getPoseMeters().toString());
     
     updateOdometry();    
   }
