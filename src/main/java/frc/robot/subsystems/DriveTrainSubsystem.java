@@ -50,8 +50,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
   // Robot characterization suggests that 21.2 is the value to use below for the first argument, 
   // however, this must be done very carefully, as it can make the robot shake violently when starting
   // First, try it without that, then try it
-  private final PIDController m_leftPIDController = new PIDController(DriveConstants.kLeftP, 0, 0);
-  private final PIDController m_rightPIDController = new PIDController(DriveConstants.kRightP, 0, 0);
+  private final PIDController m_leftPIDController = new PIDController(5e-5, 0, 0);
+  private final PIDController m_rightPIDController = new PIDController(5e-5, 0, 0);
 
   private final DifferentialDriveKinematics m_kinematics
       = new DifferentialDriveKinematics(DriveConstants.kTrackWidth);
@@ -115,7 +115,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftGroup.setVoltage(leftVolts);
-    m_rightGroup.setVoltage(-rightVolts);
+    m_rightGroup.setVoltage(rightVolts);
   }
 
 
@@ -197,7 +197,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Left Encoder Velocity", getLeftEncoderVelocity());
     SmartDashboard.putNumber("Right Encoder Velocity", getRightEncoderVelocity());
 
-    SmartDashboard.putString("Pose", m_odometry.getPoseMeters().toString());
+    SmartDashboard.putNumber("Pose X", m_odometry.getPoseMeters().getTranslation().getX());
+    SmartDashboard.putNumber("Pose Y", m_odometry.getPoseMeters().getTranslation().getY());
+    SmartDashboard.putNumber("Pose Rotation", m_odometry.getPoseMeters().getRotation().getDegrees());
     
     updateOdometry();    
   }
@@ -215,6 +217,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
     }
 
     public double getHeading() {
-      return Math.IEEEremainder(m_gyro.getHeading(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+      return m_gyro.getHeading();
+      //return Math.IEEEremainder(m_gyro.getHeading(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
     }
+
 }

@@ -67,7 +67,7 @@ public class TurnCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     if (m_deltaHeadingDirection) {
-        if (m_gyro.getHeading() >= (m_endHeading )) {
+        if (m_gyro.getHeading() >= (m_endHeading)) {
             return true;
         } else {
             return false;

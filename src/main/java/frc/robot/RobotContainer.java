@@ -163,6 +163,7 @@ public class RobotContainer {
       
     
     // An example trajectory to follow.  All units in meters.
+
     Trajectory firstTrajectory = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
@@ -186,8 +187,8 @@ public class RobotContainer {
                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
         m_driveTrain.getDriveKinematics(),
         m_driveTrain::getWheelSpeeds,
-        new PIDController(DriveConstants.kLeftP, 0, 0),
-        new PIDController(DriveConstants.kRightP, 0, 0),
+        new PIDController(5e-3, 0, 0),
+        new PIDController(5e-3, 0, 0),
         // RamseteCommand passes volts to the callback
         m_driveTrain::tankDriveVolts,
         m_driveTrain
