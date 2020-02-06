@@ -7,18 +7,18 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
+// import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.SpeedController;
+// import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+// import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.GyroProvider;
 import frc.robot.util.SparkMaxProvider;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+// import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 
 public class DriveTrainSubsystem extends SubsystemBase {
 
@@ -212,5 +212,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
    */
     public void setMaxOutput(double maxOutput) {
         //m_drive.setMaxOutput(maxOutput);
+    }
+
+    public double getHeading() {
+      return Math.IEEEremainder(m_gyro.getHeading(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
     }
 }

@@ -10,7 +10,6 @@ package frc.robot.util;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI.Port;
 
@@ -27,8 +26,10 @@ public class GyroProvider {
         m_isReal = isReal;
         if (isReal) {
             m_realGyro = new AHRS(Port.kMXP);
+            m_realGyro.reset();
         } else {
             m_simGyro = new ADXRS450_Gyro(Port.kMXP);
+            m_simGyro.calibrate();
         }
     }
 
