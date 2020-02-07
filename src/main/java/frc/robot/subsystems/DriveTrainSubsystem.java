@@ -92,14 +92,23 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_rightGroup = new SpeedControllerGroup(m_rightMaster);
     
     
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
+    resetEncoders();
     m_odometry = new DifferentialDriveOdometry(getAngle());
     
   }
 
+  public void resetEncoders() {
+    m_leftEncoder.setPosition(0);
+    m_rightEncoder.setPosition(0);
+  }
+
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
+  }
+
+  public void setPose(Pose2d pose) {
+    resetEncoders();
+    m_odometry.resetPosition(pose, getAngle());
   }
 
   public Rotation2d getAngle() {
@@ -178,12 +187,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(getLeftEncoderVelocity(), getRightEncoderVelocity());
   }
 
-
-  /*
-  public void followTrajectory(Pose2d currentPosition, Pose2d goalPosition, double targetLinearVelocity, double targetAngularVelocity) {
-    // TODO: 
-  }
-  */
 
   public DifferentialDriveKinematics getDriveKinematics() {
     return m_kinematics;
