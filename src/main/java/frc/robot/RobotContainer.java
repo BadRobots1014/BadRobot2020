@@ -12,10 +12,13 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutoDriveExamplePathCommandGroup;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.TeleopDriveCommand;
@@ -25,8 +28,6 @@ import frc.robot.subsystems.FeedSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.util.GyroProvider;
 import frc.robot.util.SparkMaxProvider;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -128,7 +129,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_teleopDriveCommand;
-    // An ExampleCommand will run in autonomous
+    return new AutoDriveExamplePathCommandGroup(m_driveTrain);    
   }
 }

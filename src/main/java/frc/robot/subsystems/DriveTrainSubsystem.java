@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 // import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.GyroProvider;
 import frc.robot.util.SparkMaxProvider;
+// import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 
 public class DriveTrainSubsystem extends SubsystemBase {
 
@@ -59,7 +61,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
   // Gains are for example purposes only - must be determined for your own robot!
   private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.151, 2.78, 0.409);
 
-  private final double encoderConstant = (1 / DriveConstants.kDriveGearing) * DriveConstants.kWheelRadius * Math.PI;
+  // The encoderConstant is the factor that converts the angular units given by
+  // the encoder to the angular units covered by the wheels.
+  private final double encoderConstant = (1 / DriveConstants.kDriveGearing) * DriveConstants.kWheelDiameter * Math.PI;
 
 
 //  // The motors on the left side of the drive.
@@ -88,16 +92,41 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_rightGroup = new SpeedControllerGroup(m_rightMaster);
     
     
-    m_leftEncoder.setPosition(0);
-    m_rightEncoder.setPosition(0);
+    resetEncoders();
     m_odometry = new DifferentialDriveOdometry(getAngle());
     
+  }
+
+  public void resetEncoders() {
+    m_leftEncoder.setPosition(0);
+    m_rightEncoder.setPosition(0);
+  }
+
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+
+  public void setPose(Pose2d pose) {
+    resetEncoders();
+    m_odometry.resetPosition(pose, getAngle());
   }
 
   public Rotation2d getAngle() {
     // Negating the angle because WPILib gyros are CW positive.
     return Rotation2d.fromDegrees(-m_gyro.getHeading());
   }
+
+   /**
+   * Controls the left and right sides of the drive directly with voltages.
+   *
+   * @param leftVolts  the commanded left output
+   * @param rightVolts the commanded right output
+   */
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    m_leftGroup.setVoltage(leftVolts);
+    m_rightGroup.setVoltage(rightVolts);
+  }
+
 
   public double getLeftEncoderPosition() {
     return m_leftEncoder.getPosition() * encoderConstant;
@@ -112,6 +141,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
     return m_rightEncoder.getVelocity() * encoderConstant / 60;
   }
 
+
+
    /**
    * Sets the desired wheel speeds.
    *
@@ -125,6 +156,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
         speeds.leftMetersPerSecond);
     final double rightOutput = m_rightPIDController.calculate(getRightEncoderVelocity(),
         speeds.rightMetersPerSecond);
+
     m_leftGroup.setVoltage(leftOutput + leftFeedforward);
     m_rightGroup.setVoltage(rightOutput + rightFeedforward);
   }
@@ -146,6 +178,20 @@ public class DriveTrainSubsystem extends SubsystemBase {
     arcadeDrive(xSpeed, rot);
   }
 
+    /**
+   * Returns the current wheel speeds of the robot.
+   *
+   * @return The current wheel speeds.
+   */
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(getLeftEncoderVelocity(), getRightEncoderVelocity());
+  }
+
+
+  public DifferentialDriveKinematics getDriveKinematics() {
+    return m_kinematics;
+  }
+
   @Override
   public void periodic() {
     // Use these to verify the conversion factors are correct
@@ -153,6 +199,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Right Encoder Position", getRightEncoderPosition());
     SmartDashboard.putNumber("Left Encoder Velocity", getLeftEncoderVelocity());
     SmartDashboard.putNumber("Right Encoder Velocity", getRightEncoderVelocity());
+
+    SmartDashboard.putNumber("Pose X", m_odometry.getPoseMeters().getTranslation().getX());
+    SmartDashboard.putNumber("Pose Y", m_odometry.getPoseMeters().getTranslation().getY());
+    SmartDashboard.putNumber("Pose Rotation", m_odometry.getPoseMeters().getRotation().getDegrees());
     
     updateOdometry();    
   }
@@ -168,4 +218,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
     public void setMaxOutput(double maxOutput) {
         //m_drive.setMaxOutput(maxOutput);
     }
+
+    public double getHeading() {
+      return m_gyro.getHeading();
+      //return Math.IEEEremainder(m_gyro.getHeading(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    }
+
 }

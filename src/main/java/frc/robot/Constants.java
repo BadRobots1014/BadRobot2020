@@ -37,8 +37,31 @@ public final class Constants {
         public static final double kMaxAngularSpeed = 2 * Math.PI; // one rotation per second
       
         public static final double kTrackWidth = 0.689796288; // meters
-        public static final double kWheelRadius = 0.1524; // meters
+        public static final double kWheelDiameter = 0.1524; // meters
+        //public static final double kPDriveVel = 1.0;
+        public static final double kDriveGearing = 10.75;
+        
+        public static final double ksVolts = 0.151;
+        public static final double kvVoltSecondsPerMeter = 2.78;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.409;
 
-        public static double kDriveGearing = 10.75;
+        public static final double kLeftP = 14.5;
+        public static final double kRightP = 14.5;
+
+        public static final double kTurnP = 5e-5;
+        public static final double kTurnI = 5e-5;
+        public static final double kTurnD = 5e-5;
+        public static final boolean kGyroReversed = false;
+
+        public static final double kTurnToleranceDeg = 5;
+        public static final double kTurnRateToleranceDegPerS = 10;//degree per sencond
+
+    }
+
+    public static final class AutoConstants{
+        public static final double kMaxSpeedMetersPerSecond = 1;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1;
+        public static final double kRamseteB = 2;
+        public static final double kRamseteZeta = 0.7;
     }
 }
