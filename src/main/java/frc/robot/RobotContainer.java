@@ -52,6 +52,7 @@ public class RobotContainer {
   private final GyroProvider m_gyroProvider;
   private final SparkMaxProvider m_speedControllerProvider;
 
+  private final AutoDriveExamplePathCommandGroup m_exampleDrive;
 
 
   /**
@@ -73,6 +74,10 @@ public class RobotContainer {
     configureDriveTrain();
     configureGatherer();
     configureFeeder();
+
+    m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
+
+
   }
 
   /**
@@ -129,6 +134,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new AutoDriveExamplePathCommandGroup(m_driveTrain);    
+    return m_exampleDrive;    
   }
 }

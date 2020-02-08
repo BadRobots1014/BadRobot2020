@@ -28,7 +28,13 @@ public class AutoDriveExamplePathCommandGroup extends SequentialCommandGroup {
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                   .beforeStarting(() -> driveTrain.setPose(new Pose2d(0, -3, new Rotation2d(0))))
                   .andThen(() -> driveTrain.tankDriveVolts(0, 0)),
-                new PrintCommand("Finished Driving Path")
+                new PrintCommand("Finished Driving Path"),
+                RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
+                .andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+                RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
+                .andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+                RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
+                .andThen(() -> driveTrain.tankDriveVolts(0, 0))
     );
 
   }

@@ -47,8 +47,8 @@ public class RamseteUtil {
                                     DriveConstants.kaVoltSecondsSquaredPerMeter),
             driveTrain.getDriveKinematics(),
             driveTrain::getWheelSpeeds,
-            new PIDController(5e-3, 0, 0),
-            new PIDController(5e-3, 0, 0),
+            new PIDController(.0187, 0, 0),
+            new PIDController(.0187, 0, 0),
             // RamseteCommand passes volts to the callback
             driveTrain::tankDriveVolts,
             driveTrain

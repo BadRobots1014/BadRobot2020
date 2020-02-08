@@ -42,16 +42,13 @@ public class DriveTrainSubsystem extends SubsystemBase {
   private final CANEncoder m_leftEncoder = m_leftMaster.getEncoder();
   private final CANEncoder m_rightEncoder = m_rightMaster.getEncoder();
 
-  private final SpeedControllerGroup m_leftGroup;
-  private final SpeedControllerGroup m_rightGroup;
-
   private final GyroProvider m_gyro;
 
   // Robot characterization suggests that 21.2 is the value to use below for the first argument, 
   // however, this must be done very carefully, as it can make the robot shake violently when starting
   // First, try it without that, then try it
-  private final PIDController m_leftPIDController = new PIDController(5e-5, 0, 0);
-  private final PIDController m_rightPIDController = new PIDController(5e-5, 0, 0);
+  private final PIDController m_leftPIDController = new PIDController(0.0187, 0, 0);
+  private final PIDController m_rightPIDController = new PIDController(0.0187, 0, 0);
 
   private final DifferentialDriveKinematics m_kinematics
       = new DifferentialDriveKinematics(DriveConstants.kTrackWidth);
@@ -87,10 +84,6 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_leftFollower.follow(m_leftMaster);
     m_rightFollower.setIdleMode(IdleMode.kBrake);
     m_rightFollower.follow(m_rightMaster);
-
-    m_leftGroup = new SpeedControllerGroup(m_leftMaster);
-    m_rightGroup = new SpeedControllerGroup(m_rightMaster);
-    
     
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(getAngle());
@@ -123,8 +116,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @param rightVolts the commanded right output
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    m_leftGroup.setVoltage(leftVolts);
-    m_rightGroup.setVoltage(rightVolts);
+    m_leftMaster.setVoltage(leftVolts);
+    m_rightMaster.setVoltage(rightVolts);
   }
 
 
@@ -157,8 +150,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
     final double rightOutput = m_rightPIDController.calculate(getRightEncoderVelocity(),
         speeds.rightMetersPerSecond);
 
-    m_leftGroup.setVoltage(leftOutput + leftFeedforward);
-    m_rightGroup.setVoltage(rightOutput + rightFeedforward);
+    m_leftMaster.setVoltage(leftOutput + leftFeedforward);
+    m_rightMaster.setVoltage(rightOutput + rightFeedforward);
   }
 
   /**
