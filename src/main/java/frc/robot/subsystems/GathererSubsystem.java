@@ -27,7 +27,6 @@ public class GathererSubsystem extends SubsystemBase {
   }
 
   public void joystickControl(DoubleSupplier joystickValue) {
-    //System.out.println(joystickValue.getAsDouble());
     m_gatherer.set(ControlMode.PercentOutput, joystickValue.getAsDouble());
   }
 }

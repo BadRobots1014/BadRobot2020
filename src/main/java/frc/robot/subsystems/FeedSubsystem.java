@@ -27,7 +27,6 @@ public class FeedSubsystem extends SubsystemBase {
   }
 
   public void joystickControl(DoubleSupplier joystickValue) {
-    //System.out.println(joystickValue.getAsDouble());
     m_feeder.set(ControlMode.PercentOutput, joystickValue.getAsDouble());
   }
 }

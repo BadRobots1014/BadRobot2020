@@ -16,11 +16,13 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
+import frc.robot.commands.HoldPlaceCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -53,6 +55,7 @@ public class RobotContainer {
   private final SparkMaxProvider m_speedControllerProvider;
 
   private final AutoDriveExamplePathCommandGroup m_exampleDrive;
+  private HoldPlaceCommand m_holdPlaceCommand; 
 
 
   /**
@@ -69,6 +72,7 @@ public class RobotContainer {
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
     m_feedCommand = new FeedCommand(m_feedSubsystem);
+    m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider, 0);
     // Configure the button bindings
     configureButtonBindings();
     configureDriveTrain();
@@ -90,6 +94,8 @@ public class RobotContainer {
   {
     DoubleSupplier leftYJoystick = () -> m_driverController.getY(Hand.kLeft);
     DoubleSupplier leftAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kLeft);
+    DoubleSupplier rightAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kRight);
+
 
     DoubleSupplier rightJoystick = () -> {
       if (Math.abs(m_driverController.getX(Hand.kRight)) > 0.1) {
@@ -102,16 +108,25 @@ public class RobotContainer {
     m_teleopDriveCommand.setControllerSupplier(leftYJoystick, rightJoystick);
 
     m_gatherCommand.setControllerSupplier(leftAttatchmentJoystick);
+    m_feedCommand.setControllerSupplier(rightAttatchmentJoystick);
     
 
-    new JoystickButton(m_driverController, Button.kBumperRight.value)
-    .whenPressed(() -> m_driveTrain.setMaxOutput(0.25))
-    .whenReleased(() -> m_driveTrain.setMaxOutput(1));
+    // new JoystickButton(m_driverController, Button.kBumperRight.value)
+    // .whenPressed(() -> m_driveTrain.setMaxOutput(0.25))
+    // .whenReleased(() -> m_driveTrain.setMaxOutput(1));
 
     //new JoystickButton(m_driverController, Button.kBumperLeft.value).whenHeld(new DriveStraight(leftYJoystick, m_gyroProvider, m_driveTrain));
     new JoystickButton(m_driverController, Button.kA.value)
     .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 90, Math.PI/2, 10));
 
+    new JoystickButton(m_driverController, Button.kBumperLeft.value)
+    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, -5, Math.PI/2, 10));
+
+    new JoystickButton(m_driverController, Button.kBumperRight.value)
+    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 5, Math.PI/2, 10));
+
+    new JoystickButton(m_driverController, Button.kB.value)
+    .whileHeld(m_holdPlaceCommand);
   }
 
   private void configureDriveTrain()
