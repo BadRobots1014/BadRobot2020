@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.AddressableLED;
 
 
@@ -15,7 +17,7 @@ public class LEDSubsystem extends SubsystemBase {
   private int m_blinkCounter;
   public enum LEDState
 	{
-		kRED, kBLUE, k1014COLOR, kRAINBOW, kLOW_BATTERY, kOFF;
+		kRED, kBLUE, k1014COLOR, kRAINBOW, kLOW_BATTERY, kAMERICA, kOFF;
 	}
 
   public LEDSubsystem(AddressableLED LED, AddressableLEDBuffer LEDBuffer) {
@@ -27,6 +29,17 @@ public class LEDSubsystem extends SubsystemBase {
     // Set the data
     m_LED.setData(m_LEDBuffer);
     m_LED.start();
+  }
+
+  @Override
+  public void periodic() {
+    // This is the loop to do things...
+    if (RobotController.getBatteryVoltage() <= 10) {
+      setLightsPattern(LEDState.kLOW_BATTERY);
+    }
+    else {
+      setLightsPattern(LEDState.kRAINBOW);
+    }
   }
 
   public void setLightsRGB(int red, int green, int blue) {
@@ -62,13 +75,27 @@ public class LEDSubsystem extends SubsystemBase {
     m_rainbowFirstPixelHue %= 180;
   }
 
-  public void setLightsBlink(int red, int green, int blue) { //must be put inside loop
+  public void setLightsBlink(int red, int green, int blue, int blinkSpeed) { //must be put inside loop
     m_blinkCounter++;
-    if (m_blinkCounter < 20 && m_blinkCounter >= 0) setLightsRGB(red, green, blue);
+    if (m_blinkCounter < blinkSpeed && m_blinkCounter >= 0) setLightsRGB(red, green, blue);
 
-    else if (m_blinkCounter < 40) setLightsPattern(LEDState.kOFF);
+    else if (m_blinkCounter < blinkSpeed*2) setLightsPattern(LEDState.kOFF);
 
     else m_blinkCounter = 0;
+  }
+
+  public void setLightsAmerica() {
+    for (var i = 0; i < m_LEDBuffer.getLength()/3; i++) {
+      // Sets the specified LED to the RGB values
+      m_LEDBuffer.setRGB(i, 255, 0, 0);
+    }
+    for (var i = m_LEDBuffer.getLength()/3; i < m_LEDBuffer.getLength()/3*2; i++) {
+      m_LEDBuffer.setRGB(i, 0, 0, 0);
+    }
+    for (var i = m_LEDBuffer.getLength()/3*2; i < m_LEDBuffer.getLength(); i++) {
+      m_LEDBuffer.setRGB(i, 0, 0, 255);
+    }
+    m_LED.setData(m_LEDBuffer);
   }
 
   public void setLightsPattern(LEDState state) {
@@ -86,10 +113,13 @@ public class LEDSubsystem extends SubsystemBase {
         setLightsRGB(255, 255, 255); //Does this turn off?
         break;
       case kLOW_BATTERY:
-        setLightsBlink(255, 0, 0);
+        setLightsBlink(255, 0, 0, 10);
         break;
       case kRAINBOW:
         setLightsRainbow();
+        break;
+      case kAMERICA:
+        setLightsAmerica();
         break;
     }
   }

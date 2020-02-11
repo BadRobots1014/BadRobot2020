@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrainSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.LEDSubsystem.LEDState;
 import frc.robot.util.RamseteUtil;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -21,10 +23,16 @@ public class AutoDriveExamplePathCommandGroup extends SequentialCommandGroup {
   /**
    * Creates a new AutoDriveCommandGroup.
    */
-
-  public AutoDriveExamplePathCommandGroup(DriveTrainSubsystem driveTrain) {    
+  boolean autoColorRed = true;
+  public AutoDriveExamplePathCommandGroup(DriveTrainSubsystem driveTrain, LEDSubsystem lights) {    
     
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
+    if (autoColorRed) {
+      lights.setLightsPattern(LEDState.kRED);
+    }
+    else {
+      lights.setLightsPattern(LEDState.kBLUE);
+    }
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                   .beforeStarting(() -> driveTrain.setPose(new Pose2d(0, -3, new Rotation2d(0))))
                   .andThen(() -> driveTrain.tankDriveVolts(0, 0)),

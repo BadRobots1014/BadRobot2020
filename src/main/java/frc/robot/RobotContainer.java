@@ -89,7 +89,7 @@ public class RobotContainer {
     configureGatherer();
     configureFeeder();
 
-    m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
+    m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain, m_LEDSubsystem);
 
 
   }
