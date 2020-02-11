@@ -14,7 +14,6 @@ import frc.robot.subsystems.GathererSubsystem;
 
 public class GatherCommand extends CommandBase {
   private DoubleSupplier m_joystickValue = () -> 0.0;
-
   private final GathererSubsystem m_gatherer;  
   /**
    * Creates a new GatherCommand.
@@ -37,7 +36,7 @@ public class GatherCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_gatherer.joystickControl(m_joystickValue);
+    m_gatherer.setGatherSpeed();
   }
 
   // Called once the command ends or is interrupted.

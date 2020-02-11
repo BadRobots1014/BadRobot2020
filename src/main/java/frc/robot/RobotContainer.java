@@ -127,6 +127,9 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController, Button.kB.value)
     .whileHeld(m_holdPlaceCommand);
+
+    new JoystickButton(m_driverController, Button.kStart.value)
+    .whenHeld(m_gatherCommand);
   }
 
   private void configureDriveTrain()
