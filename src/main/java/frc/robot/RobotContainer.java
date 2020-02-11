@@ -11,6 +11,8 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
@@ -28,6 +30,7 @@ import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.FeedSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.util.GyroProvider;
 import frc.robot.util.SparkMaxProvider;
 
@@ -53,6 +56,10 @@ public class RobotContainer {
 
   private final GyroProvider m_gyroProvider;
   private final SparkMaxProvider m_speedControllerProvider;
+  
+  private final LEDSubsystem m_LEDSubsystem;
+  private final AddressableLEDBuffer m_LEDBuffer;
+  private final AddressableLED m_LED;
 
   private final AutoDriveExamplePathCommandGroup m_exampleDrive;
   private HoldPlaceCommand m_holdPlaceCommand; 
@@ -65,8 +72,11 @@ public class RobotContainer {
     boolean isReal = Robot.isReal();
     m_gyroProvider = new GyroProvider(isReal);
     m_speedControllerProvider = new SparkMaxProvider(isReal);
+    m_LED = new AddressableLED(9);
+    m_LEDBuffer = new AddressableLEDBuffer(60);
 
     m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
+    m_LEDSubsystem = new LEDSubsystem(m_LED, m_LEDBuffer);
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(34));
     m_feedSubsystem = new FeedSubsystem(new TalonSRX(21));
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
