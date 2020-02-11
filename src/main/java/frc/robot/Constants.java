@@ -49,8 +49,8 @@ public final class Constants {
         public static final double kRightP = 14.5;
 
         public static final double kTurnP = .05;
-        public static final double kTurnI = 5e-5;
-        public static final double kTurnD = 5e-5;
+        public static final double kTurnI = 0;
+        public static final double kTurnD = .000001;
         public static final boolean kGyroReversed = true;
 
         public static final double kTurnToleranceDeg = 10;

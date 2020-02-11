@@ -75,6 +75,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_gyro = gyroProvider;
     gyroProvider.reset();
 
+    m_leftMaster.restoreFactoryDefaults();
+    m_rightMaster.restoreFactoryDefaults();
+
     m_leftMaster.setInverted(false);
     m_leftMaster.setIdleMode(IdleMode.kBrake);
     m_rightMaster.setInverted(true);
@@ -84,7 +87,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_leftFollower.follow(m_leftMaster);
     m_rightFollower.setIdleMode(IdleMode.kBrake);
     m_rightFollower.follow(m_rightMaster);
-    
+
+    //m_leftMaster.setOpenLoopRampRate(3);
+    //m_rightMaster.setOpenLoopRampRate(3);    
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(getAngle());
     

@@ -55,12 +55,17 @@ public class HoldPlaceCommand extends CommandBase {
     double pidOutput = m_pidController.calculate(currentHeading);
     // Clamp the output so it doesn't try to turn too fast
     double pidOutputClamped = MathUtil.clamp(pidOutput, -1, 1);
-    double speedToTurnToCorrect = pidOutputClamped * DriveConstants.kMaxAngularSpeed;
-    m_driveTrain.arcadeDrive(0, speedToTurnToCorrect); 
+    double speedToTurnToCorrect = 0;
+    if (Math.abs(pidOutputClamped) > 0.02) {
+      speedToTurnToCorrect = pidOutputClamped * DriveConstants.kMaxAngularSpeed;
+      m_driveTrain.arcadeDrive(0, speedToTurnToCorrect); 
+    } else {
+      m_driveTrain.arcadeDrive(0, 0);
+    }
 
     SmartDashboard.putNumber("Hold SetPoint", m_pidController.getSetpoint());
     SmartDashboard.putNumber("Current Angle", currentHeading);
-    SmartDashboard.putNumber("PID Output", pidOutput);
+    SmartDashboard.putNumber("PID Output", pidOutputClamped);
     SmartDashboard.putNumber("Turn rate to correct (in radians)", speedToTurnToCorrect);
   }
 
