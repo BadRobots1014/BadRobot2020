@@ -72,7 +72,7 @@ public class RobotContainer {
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
     m_feedCommand = new FeedCommand(m_feedSubsystem);
-    m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider, 0);
+    m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
     // Configure the button bindings
     configureButtonBindings();
     configureDriveTrain();
