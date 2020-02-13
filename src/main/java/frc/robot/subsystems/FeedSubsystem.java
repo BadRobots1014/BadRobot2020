@@ -6,14 +6,12 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.subsystems;
-
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class FeedSubsystem extends SubsystemBase {
+  private final double kFeedSpeed = 0.5;
 
   private final TalonSRX m_feeder;
 
@@ -26,7 +24,7 @@ public class FeedSubsystem extends SubsystemBase {
     m_feeder.setInverted(false);
   }
 
-  public void joystickControl(DoubleSupplier joystickValue) {
-    m_feeder.set(ControlMode.PercentOutput, joystickValue.getAsDouble());
+  public void setFeedSpeed() {
+    m_feeder.set(ControlMode.PercentOutput, kFeedSpeed);
   }
 }

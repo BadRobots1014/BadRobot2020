@@ -1,6 +1,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants.DriveConstants;
@@ -10,10 +13,13 @@ import frc.robot.util.GyroProvider;
 /**
  * A command that will turn the robot to the specified angle.
  */
-public class HoldPlaceCommand extends PIDCommand {
+public class HoldPlaceCommand extends CommandBase {
   private final DriveTrainSubsystem m_driveTrain;
   private final GyroProvider m_gyro;
 
+  private double m_desiredAngleToHold = 0;
+  
+  private final PIDController m_pidController = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
   /**
    * Turns to robot to the specified angle.
    *
@@ -21,43 +27,48 @@ public class HoldPlaceCommand extends PIDCommand {
    * @param drive              The drive subsystem to use
    */
 
-  public HoldPlaceCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro, double setPoint) {
-    super(new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD),
-        // Close loop on heading
-        driveTrain::getHeading,
-        // Set reference to target
-        setPoint,
-        // Pipe output to turn robot
-        output -> {
-          double clamped = MathUtil.clamp(-output, -1, 1);
-          System.out.println(clamped + "    " + gyro.getHeading());
-          driveTrain.arcadeDrive(0, clamped * DriveConstants.kMaxAngularSpeed); 
-        },
-        // Require the drive
-        driveTrain);
-    m_driveTrain = driveTrain;
-    m_gyro = gyro;
-    System.out.println("holdcommand");
+  public HoldPlaceCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro) {   
+    
+    addRequirements(driveTrain);
 
+    m_gyro = gyro;
+    m_driveTrain = driveTrain;
     // Set the controller to be continuous (because it is an angle controller)
-    getController().enableContinuousInput(-180, 180);
+    m_pidController.enableContinuousInput(-180, 180);
     // Set the controller tolerance - the delta tolerance ensures the robot is
     // stationary at the
     // setpoint before it is considered as having reached the reference
-    getController().setTolerance(DriveConstants.kTurnToleranceDeg, DriveConstants.kTurnRateToleranceDegPerS);
+    m_pidController.setTolerance(DriveConstants.kTurnToleranceDeg, DriveConstants.kTurnRateToleranceDegPerS);
 
   }
 
   @Override
   public void initialize() {
-    reset();
-    System.out.println("Initialized Command");
-    System.out.println(m_gyro.getHeading());
+    m_desiredAngleToHold = m_gyro.getHeading();
+    m_pidController.setSetpoint(m_desiredAngleToHold);
+    System.out.println("Initialized holdcommand to hold angle at " + m_desiredAngleToHold);
   }
 
-  public void reset() {
-    getController().setSetpoint(m_gyro.getHeading());
+  @Override
+  public void execute() {
+    double currentHeading = m_gyro.getHeading();
+    double pidOutput = m_pidController.calculate(currentHeading);
+    // Clamp the output so it doesn't try to turn too fast
+    double pidOutputClamped = MathUtil.clamp(pidOutput, -1, 1);
+    double speedToTurnToCorrect = 0;
+    if (Math.abs(pidOutputClamped) > 0.02) {
+      speedToTurnToCorrect = pidOutputClamped * DriveConstants.kMaxAngularSpeed;
+      m_driveTrain.arcadeDrive(0, speedToTurnToCorrect); 
+    } else {
+      m_driveTrain.arcadeDrive(0, 0);
+    }
+
+    SmartDashboard.putNumber("Hold SetPoint", m_pidController.getSetpoint());
+    SmartDashboard.putNumber("Current Angle", currentHeading);
+    SmartDashboard.putNumber("PID Output", pidOutputClamped);
+    SmartDashboard.putNumber("Turn rate to correct (in radians)", speedToTurnToCorrect);
   }
+
 
   @Override
   public boolean isFinished() {

@@ -75,6 +75,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_gyro = gyroProvider;
     gyroProvider.reset();
 
+    m_leftMaster.restoreFactoryDefaults();
+    m_rightMaster.restoreFactoryDefaults();
+
     m_leftMaster.setInverted(false);
     m_leftMaster.setIdleMode(IdleMode.kBrake);
     m_rightMaster.setInverted(true);
@@ -84,7 +87,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_leftFollower.follow(m_leftMaster);
     m_rightFollower.setIdleMode(IdleMode.kBrake);
     m_rightFollower.follow(m_rightMaster);
-    
+
+    //m_leftMaster.setOpenLoopRampRate(3);
+    //m_rightMaster.setOpenLoopRampRate(3);    
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(getAngle());
     
@@ -99,14 +104,17 @@ public class DriveTrainSubsystem extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
+  public double getPoseRotation() {
+    return m_odometry.getPoseMeters().getRotation().getDegrees();
+  }
+
   public void setPose(Pose2d pose) {
     resetEncoders();
     m_odometry.resetPosition(pose, getAngle());
   }
 
   public Rotation2d getAngle() {
-    // Negating the angle because WPILib gyros are CW positive.
-    return Rotation2d.fromDegrees(-m_gyro.getHeading());
+    return Rotation2d.fromDegrees(m_gyro.getHeading());
   }
 
    /**
@@ -211,10 +219,4 @@ public class DriveTrainSubsystem extends SubsystemBase {
     public void setMaxOutput(double maxOutput) {
         //m_drive.setMaxOutput(maxOutput);
     }
-
-    public double getHeading() {
-      return m_gyro.getHeading();
-      //return Math.IEEEremainder(m_gyro.getHeading(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-    }
-
 }
