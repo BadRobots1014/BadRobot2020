@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
@@ -76,8 +77,8 @@ public class RobotContainer {
     boolean isReal = Robot.isReal();
     m_gyroProvider = new GyroProvider(isReal);
     m_speedControllerProvider = new SparkMaxProvider(isReal);
-    m_LED = new AddressableLED(9);
-    m_LEDBuffer = new AddressableLEDBuffer(60);
+    m_LED = new AddressableLED(LEDConstants.kLEDPwmPort);
+    m_LEDBuffer = new AddressableLEDBuffer(LEDConstants.kLEDStrandLength);
 
     m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
     m_LEDSubsystem = new LEDSubsystem(m_LED, m_LEDBuffer);
