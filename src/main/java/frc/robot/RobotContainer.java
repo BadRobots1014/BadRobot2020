@@ -120,10 +120,10 @@ public class RobotContainer {
     .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 90, Math.PI/2, 10));
 
     new JoystickButton(m_driverController, Button.kBumperLeft.value)
-    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, -5, Math.PI/2, 10));
+    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, -5, Math.PI/3, 10));
 
     new JoystickButton(m_driverController, Button.kBumperRight.value)
-    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 5, Math.PI/2, 10));
+    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 5, Math.PI/3, 10));
 
     new JoystickButton(m_driverController, Button.kB.value)
     .whileHeld(m_holdPlaceCommand);
@@ -141,6 +141,7 @@ public class RobotContainer {
   private void configureFeeder() {
     m_feedSubsystem.setDefaultCommand(m_feedCommand);
   }
+  
 
 
   /**
