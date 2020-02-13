@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
@@ -29,12 +30,14 @@ import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.HoldPlaceCommand;
 import frc.robot.commands.RainbowLedCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.FeedSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.GyroProvider;
 import frc.robot.util.SparkMaxProvider;
 
@@ -49,10 +52,12 @@ public class RobotContainer {
   private final DriveTrainSubsystem m_driveTrain;  
   private final GathererSubsystem m_gathererSubsystem;
   private final FeedSubsystem m_feedSubsystem;
+  private final ShooterSubsystem m_shooterSubsystem;
 
   private final TeleopDriveCommand m_teleopDriveCommand;
   private final GatherCommand m_gatherCommand;
   private final FeedCommand m_feedCommand;
+  private final ShootCommand m_shootCommand;
 
   private final XboxController m_driverController = new XboxController(OIConstants.kDriverController);
   private final XboxController m_attachmentsController = new XboxController(OIConstants.kAttachmentsController);
@@ -84,17 +89,21 @@ public class RobotContainer {
     m_LEDSubsystem = new LEDSubsystem(m_LED, m_LEDBuffer);
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(34));
     m_feedSubsystem = new FeedSubsystem(new TalonSRX(21));
+    m_shooterSubsystem = new ShooterSubsystem();
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
     m_feedCommand = new FeedCommand(m_feedSubsystem);
-    m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider, 0);
+    m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
+    m_shootCommand = new ShootCommand(m_shooterSubsystem);
     // Configure the button bindings
     m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem);
     m_LEDSubsystem.setDefaultCommand(m_defaultLedCommand);
     configureButtonBindings();
     configureDriveTrain();
+    /*
     configureGatherer();
     configureFeeder();
+    */
 
     m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain, m_LEDSubsystem);
 
@@ -113,20 +122,10 @@ public class RobotContainer {
     DoubleSupplier leftAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kLeft);
     DoubleSupplier rightAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kRight);
 
-
-    DoubleSupplier rightJoystick = () -> {
-      if (Math.abs(m_driverController.getX(Hand.kRight)) > 0.1) {
-        return m_driverController.getX(Hand.kRight);
-      } else {
-        return 0;
-      }
-    };
+    DoubleSupplier rightJoystick = () -> m_driverController.getX(Hand.kRight);
+    ;
 
     m_teleopDriveCommand.setControllerSupplier(leftYJoystick, rightJoystick);
-
-    m_gatherCommand.setControllerSupplier(leftAttatchmentJoystick);
-    m_feedCommand.setControllerSupplier(rightAttatchmentJoystick);
-    
 
     // new JoystickButton(m_driverController, Button.kBumperRight.value)
     // .whenPressed(() -> m_driveTrain.setMaxOutput(0.25))
@@ -137,13 +136,24 @@ public class RobotContainer {
     .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 90, Math.PI/2, 10));
 
     new JoystickButton(m_driverController, Button.kBumperLeft.value)
-    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, -5, Math.PI/2, 10));
+    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, -4, Math.PI/2, 10));
 
     new JoystickButton(m_driverController, Button.kBumperRight.value)
-    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 5, Math.PI/2, 10));
+    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 4, Math.PI/2, 10));
 
     new JoystickButton(m_driverController, Button.kB.value)
     .whileHeld(m_holdPlaceCommand);
+
+    // Added ability to toggle commands -- untested
+    new JoystickButton(m_driverController, Button.kBack.value)
+    .toggleWhenPressed(m_gatherCommand);
+
+    new JoystickButton(m_driverController, Button.kStart.value)
+    .toggleWhenPressed(m_feedCommand);
+
+    new JoystickButton(m_driverController, Button.kY.value)
+    .toggleWhenPressed(m_shootCommand);
+
   }
 
   private void configureDriveTrain()
@@ -151,6 +161,7 @@ public class RobotContainer {
     m_driveTrain.setDefaultCommand(m_teleopDriveCommand);
   }
 
+  /*
   private void configureGatherer() {
     m_gathererSubsystem.setDefaultCommand(m_gatherCommand);
   }
@@ -158,6 +169,7 @@ public class RobotContainer {
   private void configureFeeder() {
     m_feedSubsystem.setDefaultCommand(m_feedCommand);
   }
+  */
 
 
   /**

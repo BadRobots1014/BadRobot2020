@@ -8,6 +8,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import frc.robot.Constants.DriveConstants;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -33,7 +34,19 @@ public class GyroProvider {
         }
     }
 
+    /**
+     * 
+     * @return Gets the heading [-180,180]
+     */
     public double getHeading() {
+        if (m_isReal) {
+            return Math.IEEEremainder(m_realGyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+        } else {
+            return Math.IEEEremainder(m_simGyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+        }
+    }
+
+    public double getRawAngle() {        
         if (m_isReal) {
             return m_realGyro.getAngle();
         } else {
