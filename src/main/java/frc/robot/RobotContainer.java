@@ -105,13 +105,8 @@ public class RobotContainer {
     DoubleSupplier leftAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kLeft);
     DoubleSupplier rightAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kRight);
 
-    DoubleSupplier rightJoystick = () -> {
-      if (Math.abs(m_driverController.getX(Hand.kRight)) > 0.1) {
-        return m_driverController.getX(Hand.kRight);
-      } else {
-        return 0;
-      }
-    };
+    DoubleSupplier rightJoystick = () -> m_driverController.getX(Hand.kRight);
+    ;
 
     m_teleopDriveCommand.setControllerSupplier(leftYJoystick, rightJoystick);
 
@@ -124,10 +119,10 @@ public class RobotContainer {
     .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 90, Math.PI/2, 10));
 
     new JoystickButton(m_driverController, Button.kBumperLeft.value)
-    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, -5, Math.PI/2, 10));
+    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, -4, Math.PI/2, 10));
 
     new JoystickButton(m_driverController, Button.kBumperRight.value)
-    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 5, Math.PI/2, 10));
+    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 4, Math.PI/2, 10));
 
     new JoystickButton(m_driverController, Button.kB.value)
     .whileHeld(m_holdPlaceCommand);
