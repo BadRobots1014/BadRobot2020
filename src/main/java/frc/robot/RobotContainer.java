@@ -11,25 +11,32 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.HoldPlaceCommand;
+import frc.robot.commands.RainbowLedCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.FeedSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.GyroProvider;
 import frc.robot.util.SparkMaxProvider;
@@ -58,9 +65,14 @@ public class RobotContainer {
 
   private final GyroProvider m_gyroProvider;
   private final SparkMaxProvider m_speedControllerProvider;
+  
+  private final LEDSubsystem m_LEDSubsystem;
+  private final AddressableLEDBuffer m_LEDBuffer;
+  private final AddressableLED m_LED;
 
   private final AutoDriveExamplePathCommandGroup m_exampleDrive;
   private HoldPlaceCommand m_holdPlaceCommand; 
+  private final RainbowLedCommand m_defaultLedCommand;
 
 
   /**
@@ -70,8 +82,11 @@ public class RobotContainer {
     boolean isReal = Robot.isReal();
     m_gyroProvider = new GyroProvider(isReal);
     m_speedControllerProvider = new SparkMaxProvider(isReal);
+    m_LED = new AddressableLED(LEDConstants.kLEDPwmPort);
+    m_LEDBuffer = new AddressableLEDBuffer(LEDConstants.kLEDStrandLength);
 
     m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
+    m_LEDSubsystem = new LEDSubsystem(m_LED, m_LEDBuffer);
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(34));
     m_feedSubsystem = new FeedSubsystem(new TalonSRX(21));
     m_shooterSubsystem = new ShooterSubsystem();
@@ -81,6 +96,8 @@ public class RobotContainer {
     m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
     m_shootCommand = new ShootCommand(m_shooterSubsystem);
     // Configure the button bindings
+    m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem);
+    m_LEDSubsystem.setDefaultCommand(m_defaultLedCommand);
     configureButtonBindings();
     configureDriveTrain();
     /*
@@ -88,7 +105,7 @@ public class RobotContainer {
     configureFeeder();
     */
 
-    m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
+    m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain, m_LEDSubsystem);
 
 
   }
