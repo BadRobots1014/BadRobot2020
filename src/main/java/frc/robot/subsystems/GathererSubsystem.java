@@ -7,8 +7,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,7 +16,6 @@ public class GathererSubsystem extends SubsystemBase {
 
   private final TalonSRX m_gatherer;
 
-
   /**
    * Creates a new ExampleSubsystem.
    */
@@ -26,7 +23,6 @@ public class GathererSubsystem extends SubsystemBase {
     m_gatherer = talon;
     m_gatherer.setInverted(false);
   }
-
 
   public void setGatherSpeed()
   {

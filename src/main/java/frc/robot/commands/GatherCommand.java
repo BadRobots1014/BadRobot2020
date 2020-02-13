@@ -7,13 +7,10 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.GathererSubsystem;
 
 public class GatherCommand extends CommandBase {
-  private DoubleSupplier m_joystickValue = () -> 0.0;
   private final GathererSubsystem m_gatherer;  
   /**
    * Creates a new GatherCommand.
@@ -22,10 +19,6 @@ public class GatherCommand extends CommandBase {
     m_gatherer = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
-  }
-
-  public void setControllerSupplier(DoubleSupplier joystickValue) {
-    m_joystickValue = joystickValue;
   }
 
   // Called when the command is initially scheduled.

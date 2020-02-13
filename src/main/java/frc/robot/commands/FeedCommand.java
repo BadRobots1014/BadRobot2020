@@ -7,14 +7,10 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FeedSubsystem;
 
 public class FeedCommand extends CommandBase {
-  private DoubleSupplier m_joystickValue = () -> 0.0;
-
   private final FeedSubsystem m_feeder;  
   /**
    * Creates a new GatherCommand.
@@ -25,10 +21,6 @@ public class FeedCommand extends CommandBase {
     addRequirements(subsystem);
   }
 
-  public void setControllerSupplier(DoubleSupplier joystickValue) {
-    m_joystickValue = joystickValue;
-  }
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -37,7 +29,7 @@ public class FeedCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_feeder.joystickControl(m_joystickValue);
+    m_feeder.setFeedSpeed();
   }
 
   // Called once the command ends or is interrupted.
