@@ -34,8 +34,8 @@ public class TurnCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_startHeading = m_gyro.getHeading();
-    m_endHeading = m_gyro.getHeading() + m_angle;
+    m_startHeading = m_gyro.getRawAngle();
+    m_endHeading = m_gyro.getRawAngle() + m_angle;
     if ((m_endHeading - m_startHeading) >= 0) {
         m_deltaHeadingDirection = true;
     } else {
@@ -47,11 +47,11 @@ public class TurnCommand extends CommandBase {
   @Override
   public void execute() {
     if (m_deltaHeadingDirection) {
-        if (m_gyro.getHeading() < (m_endHeading)) {
+        if (m_gyro.getRawAngle() < (m_endHeading)) {
             m_driveTrain.arcadeDrive(0.0, -m_speed);
         }
     } else {
-        if (m_gyro.getHeading() > (m_endHeading)) {
+        if (m_gyro.getRawAngle() > (m_endHeading)) {
             m_driveTrain.arcadeDrive(0.0, m_speed);
         }
     }
@@ -67,13 +67,13 @@ public class TurnCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     if (m_deltaHeadingDirection) {
-        if (m_gyro.getHeading() >= (m_endHeading)) {
+        if (m_gyro.getRawAngle() >= (m_endHeading)) {
             return true;
         } else {
             return false;
         }
     } else {
-        if (m_gyro.getHeading() <= (m_endHeading)) {
+        if (m_gyro.getRawAngle() <= (m_endHeading)) {
             return true;
         } else {
             return false;
