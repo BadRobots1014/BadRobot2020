@@ -34,12 +34,10 @@ public class LEDSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This is the loop to do things...
-    if (RobotController.getBatteryVoltage() <= 10) {
-      setLightsPattern(LEDState.kLOW_BATTERY);
-    }
-    else {
-      setLightsPattern(LEDState.kRAINBOW);
-    }
+
+    // else {
+    //   setLightsPattern(LEDState.kRAINBOW);
+    // }
   }
 
   public void setLightsRGB(int red, int green, int blue) {
@@ -73,15 +71,18 @@ public class LEDSubsystem extends SubsystemBase {
     m_rainbowFirstPixelHue += 3;
     // Check bounds
     m_rainbowFirstPixelHue %= 180;
+    m_LED.setData(m_LEDBuffer);
   }
 
   public void setLightsBlink(int red, int green, int blue, int blinkSpeed) { //must be put inside loop
     m_blinkCounter++;
-    if (m_blinkCounter < blinkSpeed && m_blinkCounter >= 0) setLightsRGB(red, green, blue);
-
-    else if (m_blinkCounter < blinkSpeed*2) setLightsPattern(LEDState.kOFF);
-
-    else m_blinkCounter = 0;
+    if (m_blinkCounter < blinkSpeed && m_blinkCounter >= 0) 
+      setLightsRGB(red, green, blue);
+    else if (m_blinkCounter < blinkSpeed*2) 
+      setLightsPattern(LEDState.kOFF);
+    else 
+      m_blinkCounter = 0;
+    
   }
 
   public void setLightsAmerica() {

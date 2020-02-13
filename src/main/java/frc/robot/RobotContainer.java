@@ -19,12 +19,15 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.HoldPlaceCommand;
+import frc.robot.commands.RainbowLedCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -63,6 +66,7 @@ public class RobotContainer {
 
   private final AutoDriveExamplePathCommandGroup m_exampleDrive;
   private HoldPlaceCommand m_holdPlaceCommand; 
+  private final RainbowLedCommand m_defaultLedCommand;
 
 
   /**
@@ -84,6 +88,8 @@ public class RobotContainer {
     m_feedCommand = new FeedCommand(m_feedSubsystem);
     m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider, 0);
     // Configure the button bindings
+    m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem);
+    m_LEDSubsystem.setDefaultCommand(m_defaultLedCommand);
     configureButtonBindings();
     configureDriveTrain();
     configureGatherer();
