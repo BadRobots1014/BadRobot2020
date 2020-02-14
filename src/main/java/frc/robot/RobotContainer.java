@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.AccessoryConstants;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
 import frc.robot.commands.FeedCommand;
@@ -87,8 +88,8 @@ public class RobotContainer {
 
     m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
     m_LEDSubsystem = new LEDSubsystem(m_LED, m_LEDBuffer);
-    m_gathererSubsystem = new GathererSubsystem(new TalonSRX(34));
-    m_feedSubsystem = new FeedSubsystem(new TalonSRX(21));
+    m_gathererSubsystem = new GathererSubsystem(new TalonSRX(AccessoryConstants.kGathererPort));
+    m_feedSubsystem = new FeedSubsystem(new TalonSRX(AccessoryConstants.kFeedPort));
     m_shooterSubsystem = new ShooterSubsystem();
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
@@ -105,7 +106,7 @@ public class RobotContainer {
     configureFeeder();
     */
 
-    m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain, m_LEDSubsystem);
+    m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
 
 
   }
@@ -144,7 +145,7 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kB.value)
     .whileHeld(m_holdPlaceCommand);
 
-    // Added ability to toggle commands -- untested
+    // Added ability to toggle commands
     new JoystickButton(m_driverController, Button.kBack.value)
     .toggleWhenPressed(m_gatherCommand);
 

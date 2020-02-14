@@ -38,21 +38,44 @@ public class RamseteUtil {
             return new WaitCommand(1);
         }    
         
-        RamseteCommand ramseteCommand = new RamseteCommand(
-            trajectory,
-            driveTrain::getPose,
-            new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-            new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                    DriveConstants.kvVoltSecondsPerMeter,
-                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
-            driveTrain.getDriveKinematics(),
-            driveTrain::getWheelSpeeds,
-            new PIDController(.0187, 0, 0),
-            new PIDController(.0187, 0, 0),
-            // RamseteCommand passes volts to the callback
-            driveTrain::tankDriveVolts,
-            driveTrain
-        );
+        // RamseteCommand ramseteCommand = new RamseteCommand(
+        //     trajectory,
+        //     driveTrain::getPose,
+        //     new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+        //     new SimpleMotorFeedforward(DriveConstants.ksVolts,
+        //                             DriveConstants.kvVoltSecondsPerMeter,
+        //                             DriveConstants.kaVoltSecondsSquaredPerMeter),
+        //     driveTrain.getDriveKinematics(),
+        //     driveTrain::getWheelSpeeds,
+        //     new PIDController(1.487, 0, 0),
+        //     new PIDController(1.487, 0, 0),
+        //     // RamseteCommand passes volts to the callback
+        //     driveTrain::tankDriveVolts,
+        //     driveTrain
+        // );
+
+        RamseteCommand ramseteCommand = new RamseteCommand(trajectory,
+         driveTrain::getPose,
+         new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+         driveTrain.getDriveKinematics(), 
+         driveTrain::setSpeeds, 
+         driveTrain);
+        
+        // new RamseteCommand(
+        //     trajectory,
+        //     driveTrain::getPose,
+        //     new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+        //     new SimpleMotorFeedforward(DriveConstants.ksVolts,
+        //                             DriveConstants.kvVoltSecondsPerMeter,
+        //                             DriveConstants.kaVoltSecondsSquaredPerMeter),
+        //     driveTrain.getDriveKinematics(),
+        //     driveTrain::getWheelSpeeds,
+        //     new PIDController(1.487, 0, 0),
+        //     new PIDController(1.487, 0, 0),
+        //     // RamseteCommand passes volts to the callback
+        //     driveTrain::tankDriveVolts,
+        //     driveTrain
+        // );
         return ramseteCommand;
     }
 }

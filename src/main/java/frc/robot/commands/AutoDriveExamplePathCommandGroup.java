@@ -24,9 +24,8 @@ public class AutoDriveExamplePathCommandGroup extends SequentialCommandGroup {
    * Creates a new AutoDriveCommandGroup.
    */
   LEDSubsystem m_lights;
-  public AutoDriveExamplePathCommandGroup(DriveTrainSubsystem driveTrain, LEDSubsystem lights) {    
-    m_lights = lights;
-    addRequirements(lights);
+  public AutoDriveExamplePathCommandGroup(DriveTrainSubsystem driveTrain) {    
+    //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                   .beforeStarting(() -> driveTrain.setPose(new Pose2d(0, -3, new Rotation2d(0))))
@@ -39,19 +38,18 @@ public class AutoDriveExamplePathCommandGroup extends SequentialCommandGroup {
                 RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                 .andThen(() -> driveTrain.tankDriveVolts(0, 0))
     );
-
   }
 
-  @Override
-  public void initialize() {
-    boolean autoColorRed = true;
-    if (autoColorRed) {
-      m_lights.setLightsPattern(LEDState.kRED);
-    }
-    else {
-      m_lights.setLightsPattern(LEDState.kBLUE);
-    }
-  }
+  // @Override
+  // public void initialize() {
+  //   boolean autoColorRed = true;
+  //   if (autoColorRed) {
+  //     m_lights.setLightsPattern(LEDState.kRED);
+  //   }
+  //   else {
+  //     m_lights.setLightsPattern(LEDState.kBLUE);
+  //   }
+  // }
 
   // For reference:
   // Create a voltage constraint to ensure we don't accelerate too fast

@@ -9,7 +9,10 @@ package frc.robot.subsystems;
 
 // import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.CANPIDController.ArbFFUnits;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -42,13 +45,17 @@ public class DriveTrainSubsystem extends SubsystemBase {
   private final CANEncoder m_leftEncoder = m_leftMaster.getEncoder();
   private final CANEncoder m_rightEncoder = m_rightMaster.getEncoder();
 
+  private final CANPIDController m_leftMasterPIDController = m_leftMaster.getPIDController();
+  private final CANPIDController m_rightMasterPIDController = m_rightMaster.getPIDController();
+
+
   private final GyroProvider m_gyro;
 
   // Robot characterization suggests that 21.2 is the value to use below for the first argument, 
   // however, this must be done very carefully, as it can make the robot shake violently when starting
   // First, try it without that, then try it
-  private final PIDController m_leftPIDController = new PIDController(0.0187, 0, 0);
-  private final PIDController m_rightPIDController = new PIDController(0.0187, 0, 0);
+  private final PIDController m_leftPIDController = new PIDController(0, 0, 0);
+  private final PIDController m_rightPIDController = new PIDController(0, 0, 0);
 
   private final DifferentialDriveKinematics m_kinematics
       = new DifferentialDriveKinematics(DriveConstants.kTrackWidth);
@@ -88,8 +95,16 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_rightFollower.setIdleMode(IdleMode.kBrake);
     m_rightFollower.follow(m_rightMaster);
 
-    //m_leftMaster.setOpenLoopRampRate(3);
-    //m_rightMaster.setOpenLoopRampRate(3);    
+    m_leftEncoder.setVelocityConversionFactor(encoderConstant * 0.0166666666666667);
+    m_rightEncoder.setVelocityConversionFactor(encoderConstant * 0.0166666666666667);
+    m_leftEncoder.setPositionConversionFactor(encoderConstant);
+    m_rightEncoder.setPositionConversionFactor(encoderConstant);
+
+    m_leftMaster.setSmartCurrentLimit(DriveConstants.kCurrentLimit);
+    m_rightMaster.setSmartCurrentLimit(DriveConstants.kCurrentLimit);
+    m_leftFollower.setSmartCurrentLimit(DriveConstants.kCurrentLimit);
+    m_rightFollower.setSmartCurrentLimit(DriveConstants.kCurrentLimit);
+
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(getAngle());
     
@@ -130,19 +145,21 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
 
   public double getLeftEncoderPosition() {
-    return m_leftEncoder.getPosition() * encoderConstant;
+    return m_leftEncoder.getPosition(); // * encoderConstant;
   }
   public double getLeftEncoderVelocity() {
-    return m_leftEncoder.getVelocity() * encoderConstant / 60;
+    return m_leftEncoder.getVelocity(); // * encoderConstant * 0.0166666666666667; // /60
   }
   public double getRightEncoderPosition() {
-    return m_rightEncoder.getPosition() * encoderConstant;
+    return m_rightEncoder.getPosition(); // * encoderConstant;
   }
   public double getRightEncoderVelocity() {
-    return m_rightEncoder.getVelocity() * encoderConstant / 60;
+    return m_rightEncoder.getVelocity(); // * encoderConstant * 0.0166666666666667; // /60
   }
 
-
+  public void setSpeeds(double left, double right) {
+    setSpeeds(new DifferentialDriveWheelSpeeds(left, right));
+  }
 
    /**
    * Sets the desired wheel speeds.
@@ -153,13 +170,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
     final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
 
-    final double leftOutput = m_leftPIDController.calculate(getLeftEncoderVelocity(),
-        speeds.leftMetersPerSecond);
-    final double rightOutput = m_rightPIDController.calculate(getRightEncoderVelocity(),
-        speeds.rightMetersPerSecond);
-
-    m_leftMaster.setVoltage(leftOutput + leftFeedforward);
-    m_rightMaster.setVoltage(rightOutput + rightFeedforward);
+    m_leftMasterPIDController.setReference(speeds.leftMetersPerSecond, ControlType.kVelocity, 0, leftFeedforward, ArbFFUnits.kVoltage);
+    m_rightMasterPIDController.setReference(speeds.rightMetersPerSecond, ControlType.kVelocity, 0, rightFeedforward, ArbFFUnits.kVoltage);
+    
   }
 
   /**
