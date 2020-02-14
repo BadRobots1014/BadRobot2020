@@ -1,9 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.AddressableLED;
 
 
@@ -17,7 +15,7 @@ public class LEDSubsystem extends SubsystemBase {
   private int m_blinkCounter;
   public enum LEDState
 	{
-		kRED, kBLUE, k1014COLOR, kRAINBOW, kLOW_BATTERY, kAMERICA, kOFF;
+		kRED, kBLUE, k1014COLOR, kRAINBOW, kLOW_BATTERY, kAMERICA, kWHITE, kOFF;
 	}
 
   public LEDSubsystem(AddressableLED LED, AddressableLEDBuffer LEDBuffer) {
@@ -91,7 +89,7 @@ public class LEDSubsystem extends SubsystemBase {
       m_LEDBuffer.setRGB(i, 255, 0, 0);
     }
     for (var i = m_LEDBuffer.getLength()/3; i < m_LEDBuffer.getLength()/3*2; i++) {
-      m_LEDBuffer.setRGB(i, 0, 0, 0);
+      m_LEDBuffer.setRGB(i, 255, 255, 255);
     }
     for (var i = m_LEDBuffer.getLength()/3*2; i < m_LEDBuffer.getLength(); i++) {
       m_LEDBuffer.setRGB(i, 0, 0, 255);
@@ -108,10 +106,10 @@ public class LEDSubsystem extends SubsystemBase {
         setLightsRGB(0, 0, 255);
         break;
       case k1014COLOR:
-        setLightsRGB(255, 255, 0); //just a regular yellow
+        setLightsRGB(235, 255, 0);
         break;
       case kOFF:
-        setLightsRGB(255, 255, 255); //Does this turn off?
+        setLightsRGB(0, 0, 0);
         break;
       case kLOW_BATTERY:
         setLightsBlink(255, 0, 0, 10);
@@ -122,6 +120,8 @@ public class LEDSubsystem extends SubsystemBase {
       case kAMERICA:
         setLightsAmerica();
         break;
+      case kWHITE:
+        setLightsRGB(255, 255, 255);
     }
   }
 }

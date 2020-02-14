@@ -62,7 +62,6 @@ public class RobotContainer {
   private final XboxController m_driverController = new XboxController(OIConstants.kDriverController);
   private final XboxController m_attachmentsController = new XboxController(OIConstants.kAttachmentsController);
 
-
   private final GyroProvider m_gyroProvider;
   private final SparkMaxProvider m_speedControllerProvider;
   
@@ -84,7 +83,6 @@ public class RobotContainer {
     m_speedControllerProvider = new SparkMaxProvider(isReal);
     m_LED = new AddressableLED(LEDConstants.kLEDPwmPort);
     m_LEDBuffer = new AddressableLEDBuffer(LEDConstants.kLEDStrandLength);
-
     m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
     m_LEDSubsystem = new LEDSubsystem(m_LED, m_LEDBuffer);
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(34));
@@ -96,7 +94,7 @@ public class RobotContainer {
     m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
     m_shootCommand = new ShootCommand(m_shooterSubsystem);
     // Configure the button bindings
-    m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem);
+    m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem, m_driverController, m_attachmentsController);
     m_LEDSubsystem.setDefaultCommand(m_defaultLedCommand);
     configureButtonBindings();
     configureDriveTrain();
