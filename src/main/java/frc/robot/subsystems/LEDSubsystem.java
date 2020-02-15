@@ -1,9 +1,8 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLED;
-
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
   /**
@@ -15,7 +14,7 @@ public class LEDSubsystem extends SubsystemBase {
   private int m_blinkCounter;
   public enum LEDState
 	{
-		kRED, kBLUE, k1014COLOR, kRAINBOW, kLOW_BATTERY, kAMERICA, kWHITE, kOFF;
+		kRED, kBLUE, k1014COLOR, kRAINBOW, kLOW_BATTERY, kAMERICA, kWHITE, kSPINNER, kOFF;
 	}
 
   public LEDSubsystem(AddressableLED LED, AddressableLEDBuffer LEDBuffer) {
@@ -122,6 +121,9 @@ public class LEDSubsystem extends SubsystemBase {
         break;
       case kWHITE:
         setLightsRGB(255, 255, 255);
+        break;
+      case kSPINNER:
+      break;
     }
   }
 }
