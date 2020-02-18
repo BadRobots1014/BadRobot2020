@@ -10,8 +10,10 @@ package frc.robot;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
 
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -34,6 +36,7 @@ import frc.robot.commands.RainbowLedCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
+import frc.robot.subsystems.ControlPanelSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.FeedSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
@@ -66,15 +69,17 @@ public class RobotContainer {
   private final GyroProvider m_gyroProvider;
   private final SparkMaxProvider m_speedControllerProvider;
   
-  private final LEDSubsystem m_LEDSubsystem;
-  private final AddressableLEDBuffer m_LEDBuffer;
-  private final AddressableLED m_LED;
+  private LEDSubsystem m_LEDSubsystem;
+  private AddressableLEDBuffer m_LEDBuffer;
+  private AddressableLED m_LED;
 
   private final AutoDriveExamplePathCommandGroup m_exampleDrive;
   private HoldPlaceCommand m_holdPlaceCommand; 
   private final RainbowLedCommand m_defaultLedCommand;
 
-
+  private ColorSensorV3 m_colorSensor;
+  private ColorMatch m_colorMatcher;
+  private ControlPanelSubsystem m_controlPanelSubsystem;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -83,10 +88,13 @@ public class RobotContainer {
     boolean isReal = Robot.isReal();
     m_gyroProvider = new GyroProvider(isReal);
     m_speedControllerProvider = new SparkMaxProvider(isReal);
+    m_colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+    m_colorMatcher = new ColorMatch();
     m_LED = new AddressableLED(LEDConstants.kLEDPwmPort);
     m_LEDBuffer = new AddressableLEDBuffer(LEDConstants.kLEDStrandLength);
     m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
     m_LEDSubsystem = new LEDSubsystem(m_LED, m_LEDBuffer);
+    m_controlPanelSubsystem = new ControlPanelSubsystem(m_colorSensor, m_colorMatcher, new TalonSRX(17));
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(34));
     m_feedSubsystem = new FeedSubsystem(new TalonSRX(21));
     m_shooterSubsystem = new ShooterSubsystem();
