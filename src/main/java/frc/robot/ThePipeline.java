@@ -25,7 +25,7 @@ import org.opencv.objdetect.*;
 *
 * @author GRIP
 */
-public class GripPipeline implements VisionPipeline {
+public class ThePipeline implements VisionPipeline {
 
 	//Outputs
 	private Mat cvResizeOutput = new Mat();
@@ -306,9 +306,5 @@ public class GripPipeline implements VisionPipeline {
 			output.add(contour);
 		}
 	}
-
-
-
-
 }
 
