@@ -114,10 +114,9 @@ public class RobotContainer {
     configureFeeder();
     */
 
+    m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
     // Configure SmartDashboard Tabs
     configureAutonomousTab();
-
-    m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
 
 
   }
@@ -187,9 +186,9 @@ public class RobotContainer {
   {
     m_autonomousChooser = new SendableChooser<Command>();
     m_autonomousChooser.addOption("Hold Place", m_holdPlaceCommand);
-    m_autonomousChooser.addOption("Example Path Drive", m_exampleDrive);
+    m_autonomousChooser.setDefaultOption("Example Path Drive", m_exampleDrive);
 
-    m_autonomousChooser.setDefaultOption("Hold Place", m_holdPlaceCommand);
+    //m_autonomousChooser.setDefaultOption("Hold Place", m_holdPlaceCommand);
 
     m_autonomousShuffleboardTab.add("Autonomous Chooser", m_autonomousChooser);
   }
