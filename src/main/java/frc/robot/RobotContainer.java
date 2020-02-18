@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -72,8 +75,11 @@ public class RobotContainer {
   private final AddressableLED m_LED;
 
   private final AutoDriveExamplePathCommandGroup m_exampleDrive;
-  private HoldPlaceCommand m_holdPlaceCommand; 
   private final RainbowLedCommand m_defaultLedCommand;
+  private HoldPlaceCommand m_holdPlaceCommand;
+
+  private final ShuffleboardTab m_autonomousShuffleboardTab = Shuffleboard.getTab("Autonomous");
+  private SendableChooser<Command> m_autonomousChooser;
 
 
   /**
@@ -81,6 +87,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     boolean isReal = Robot.isReal();
+
     m_gyroProvider = new GyroProvider(isReal);
     m_speedControllerProvider = new SparkMaxProvider(isReal);
     m_LED = new AddressableLED(LEDConstants.kLEDPwmPort);
@@ -90,11 +97,13 @@ public class RobotContainer {
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(AccessoryConstants.kGathererPort));
     m_feedSubsystem = new FeedSubsystem(new TalonSRX(AccessoryConstants.kFeedPort));
     m_shooterSubsystem = new ShooterSubsystem();
+
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
     m_feedCommand = new FeedCommand(m_feedSubsystem);
     m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
     m_shootCommand = new ShootCommand(m_shooterSubsystem);
+
     // Configure the button bindings
     m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem, m_driverController, m_attachmentsController);
     m_LEDSubsystem.setDefaultCommand(m_defaultLedCommand);
@@ -104,6 +113,9 @@ public class RobotContainer {
     configureGatherer();
     configureFeeder();
     */
+
+    // Configure SmartDashboard Tabs
+    configureAutonomousTab();
 
     m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
 
@@ -171,6 +183,17 @@ public class RobotContainer {
   }
   */
 
+  private void configureAutonomousTab()
+  {
+    m_autonomousChooser = new SendableChooser<Command>();
+    m_autonomousChooser.addOption("Hold Place", m_holdPlaceCommand);
+    m_autonomousChooser.addOption("Example Path Drive", m_exampleDrive);
+
+    m_autonomousChooser.setDefaultOption("Hold Place", m_holdPlaceCommand);
+
+    m_autonomousShuffleboardTab.add("Autonomous Chooser", m_autonomousChooser);
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -178,6 +201,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return m_exampleDrive;    
+    return m_autonomousChooser.getSelected();    
   }
 }
