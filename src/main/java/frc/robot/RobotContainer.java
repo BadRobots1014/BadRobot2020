@@ -72,7 +72,7 @@ public class RobotContainer {
     m_speedControllerProvider = new SparkMaxProvider(isReal);
 
     m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
-    m_gathererSubsystem = new GathererSubsystem(new TalonSRX(34));
+    m_gathererSubsystem = new GathererSubsystem(new TalonSRX(23));
     m_feedSubsystem = new FeedSubsystem(new TalonSRX(21));
     m_shooterSubsystem = new ShooterSubsystem();
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
