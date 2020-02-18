@@ -148,6 +148,13 @@ public class Robot extends TimedRobot {
     }
 
     System.out.println();
+
+    double centerX;
+    synchronized (imgLock) {
+        centerX = this.centerX;
+    }
+
+    System.out.println(centerX);
   }
 
   @Override
