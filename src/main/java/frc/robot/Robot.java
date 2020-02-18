@@ -7,9 +7,14 @@
 
 package frc.robot;
 
+import org.opencv.core.Rect;
+import org.opencv.imgproc.Imgproc;
+
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,6 +32,14 @@ public class Robot extends TimedRobot {
   NetworkTable table;
   double[] areas;
   double[] defaultValue = new double[0];
+  
+  private static final int IMG_WIDTH = 320;
+  private static final int IMG_HEIGHT = 240;
+
+  private VisionThread visionThread;
+  private double centerX = 0.0;
+
+  private final Object imgLock = new Object();
 
 
   /**
@@ -41,6 +54,20 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
     table = NetworkTableInstance.getDefault().getTable("GRIP/mycontoursReport");
+
+    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+    camera.setResolution(IMG_WIDTH, IMG_HEIGHT);
+
+    visionThread = new VisionThread(camera, new ThePipeline(), pipeline -> {
+        if (!pipeline.filterContoursOutput().isEmpty()) {
+            Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+            synchronized (imgLock) {
+                centerX = r.x + (r.width / 2);
+            }
+        }
+    });
+    visionThread.start();
+
 
     
   }
@@ -90,7 +117,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-  }
+    // double centerX;
+    // synchronized (imgLock) {
+    //     centerX = this.centerX;
+    // }
+    // double turn = centerX - (IMG_WIDTH / 2);
+    // drive.arcadeDrive(-0.6, turn * 0.005);
+}
 
   @Override
   public void teleopInit() {
@@ -117,6 +150,13 @@ public class Robot extends TimedRobot {
     }
 
     System.out.println();
+
+    double centerX;
+    synchronized (imgLock) {
+        centerX = this.centerX;
+    }
+
+    System.out.println(centerX);
   }
 
   @Override
