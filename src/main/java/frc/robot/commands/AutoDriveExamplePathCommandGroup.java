@@ -29,14 +29,14 @@ public class AutoDriveExamplePathCommandGroup extends SequentialCommandGroup {
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                   .beforeStarting(() -> driveTrain.setPose(new Pose2d(0, -3, new Rotation2d(0))))
-                  .andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+                  .andThen(() -> driveTrain.stop()),
                 new PrintCommand("Finished Driving Path"),
                 RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
-                .andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+                .andThen(() -> driveTrain.stop()),
                 RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
-                .andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+                .andThen(() -> driveTrain.stop()),
                 RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
-                .andThen(() -> driveTrain.tankDriveVolts(0, 0))
+                .andThen(() -> driveTrain.stop())
     );
   }
 
