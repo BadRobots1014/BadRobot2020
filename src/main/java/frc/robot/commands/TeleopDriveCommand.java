@@ -21,7 +21,7 @@ import edu.wpi.first.wpiutil.math.MathUtil;
  */
 public class TeleopDriveCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final DriveTrainSubsystem m_driveTrain;  
+  private final DriveTrainSubsystem m_driveTrain; 
 
   // Initialize these so that it is not empty.
   private DoubleSupplier m_leftDoubleSupplier = () -> 0.0;
@@ -41,6 +41,7 @@ public class TeleopDriveCommand extends CommandBase {
    */
   public TeleopDriveCommand(DriveTrainSubsystem subsystem) {
     m_driveTrain = subsystem;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -85,6 +86,7 @@ public class TeleopDriveCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_driveTrain.stop();
   }
 
   // Returns true when the command should end.

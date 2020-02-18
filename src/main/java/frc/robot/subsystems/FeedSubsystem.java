@@ -27,4 +27,7 @@ public class FeedSubsystem extends SubsystemBase {
   public void setFeedSpeed() {
     m_feeder.set(ControlMode.PercentOutput, kFeedSpeed);
   }
+  public void stopFeed() {
+    m_feeder.set(ControlMode.PercentOutput, 0);
+  }
 }

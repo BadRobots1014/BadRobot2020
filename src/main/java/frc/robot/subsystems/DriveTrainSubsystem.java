@@ -9,7 +9,10 @@ package frc.robot.subsystems;
 
 // import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.CANPIDController.ArbFFUnits;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -42,13 +45,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
   private final CANEncoder m_leftEncoder = m_leftMaster.getEncoder();
   private final CANEncoder m_rightEncoder = m_rightMaster.getEncoder();
 
-  private final GyroProvider m_gyro;
+  private final CANPIDController m_leftMasterPIDController = m_leftMaster.getPIDController();
+  private final CANPIDController m_rightMasterPIDController = m_rightMaster.getPIDController();
 
-  // Robot characterization suggests that 21.2 is the value to use below for the first argument, 
-  // however, this must be done very carefully, as it can make the robot shake violently when starting
-  // First, try it without that, then try it
-  private final PIDController m_leftPIDController = new PIDController(0.0187, 0, 0);
-  private final PIDController m_rightPIDController = new PIDController(0.0187, 0, 0);
+  private final GyroProvider m_gyro;
 
   private final DifferentialDriveKinematics m_kinematics
       = new DifferentialDriveKinematics(DriveConstants.kTrackWidth);
@@ -56,18 +56,11 @@ public class DriveTrainSubsystem extends SubsystemBase {
   private final DifferentialDriveOdometry m_odometry;
 
   // Gains are for example purposes only - must be determined for your own robot!
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.151, 2.78, 0.409);
+  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter, DriveConstants.kaVoltSecondsSquaredPerMeter);
 
   // The encoderConstant is the factor that converts the angular units given by
   // the encoder to the angular units covered by the wheels.
   private final double encoderConstant = (1 / DriveConstants.kDriveGearing) * DriveConstants.kWheelDiameter * Math.PI;
-
-
-//  // The motors on the left side of the drive.
-//   private final SpeedControllerGroup m_leftMotors;
-
-//  // The motors on the right side of the drive.
-//   private final SpeedControllerGroup m_rightMotors;
 
  // The robot's drive  
 
@@ -88,8 +81,16 @@ public class DriveTrainSubsystem extends SubsystemBase {
     m_rightFollower.setIdleMode(IdleMode.kBrake);
     m_rightFollower.follow(m_rightMaster);
 
-    //m_leftMaster.setOpenLoopRampRate(3);
-    //m_rightMaster.setOpenLoopRampRate(3);    
+    m_leftEncoder.setVelocityConversionFactor(encoderConstant * 0.0166666666666667);
+    m_rightEncoder.setVelocityConversionFactor(encoderConstant * 0.0166666666666667);
+    m_leftEncoder.setPositionConversionFactor(encoderConstant);
+    m_rightEncoder.setPositionConversionFactor(encoderConstant);
+
+    m_leftMaster.setSmartCurrentLimit(DriveConstants.kCurrentLimit);
+    m_rightMaster.setSmartCurrentLimit(DriveConstants.kCurrentLimit);
+    m_leftFollower.setSmartCurrentLimit(DriveConstants.kCurrentLimit);
+    m_rightFollower.setSmartCurrentLimit(DriveConstants.kCurrentLimit);
+
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(getAngle());
     
@@ -117,32 +118,27 @@ public class DriveTrainSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(m_gyro.getHeading());
   }
 
-   /**
-   * Controls the left and right sides of the drive directly with voltages.
-   *
-   * @param leftVolts  the commanded left output
-   * @param rightVolts the commanded right output
-   */
-  public void tankDriveVolts(double leftVolts, double rightVolts) {
-    m_leftMaster.setVoltage(leftVolts);
-    m_rightMaster.setVoltage(rightVolts);
+  public void stop() {
+    m_leftMaster.set(0);
+    m_rightMaster.set(0);
   }
-
 
   public double getLeftEncoderPosition() {
-    return m_leftEncoder.getPosition() * encoderConstant;
+    return m_leftEncoder.getPosition();
   }
   public double getLeftEncoderVelocity() {
-    return m_leftEncoder.getVelocity() * encoderConstant / 60;
+    return m_leftEncoder.getVelocity();
   }
   public double getRightEncoderPosition() {
-    return m_rightEncoder.getPosition() * encoderConstant;
+    return m_rightEncoder.getPosition();
   }
   public double getRightEncoderVelocity() {
-    return m_rightEncoder.getVelocity() * encoderConstant / 60;
+    return m_rightEncoder.getVelocity();
   }
 
-
+  public void setSpeeds(double left, double right) {
+    setSpeeds(new DifferentialDriveWheelSpeeds(left, right));
+  }
 
    /**
    * Sets the desired wheel speeds.
@@ -153,13 +149,11 @@ public class DriveTrainSubsystem extends SubsystemBase {
     final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
     final double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
 
-    final double leftOutput = m_leftPIDController.calculate(getLeftEncoderVelocity(),
-        speeds.leftMetersPerSecond);
-    final double rightOutput = m_rightPIDController.calculate(getRightEncoderVelocity(),
-        speeds.rightMetersPerSecond);
-
-    m_leftMaster.setVoltage(leftOutput + leftFeedforward);
-    m_rightMaster.setVoltage(rightOutput + rightFeedforward);
+    m_leftMasterPIDController.setReference(speeds.leftMetersPerSecond, ControlType.kVelocity, 
+                                            /* PID Slot */ 0, leftFeedforward, ArbFFUnits.kVoltage);
+    m_rightMasterPIDController.setReference(speeds.rightMetersPerSecond, ControlType.kVelocity, 
+                                            /* PID Slot */ 0, rightFeedforward, ArbFFUnits.kVoltage);
+    
   }
 
   /**
@@ -177,6 +171,13 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   public void directDrive(double xSpeed, double rot) {
     arcadeDrive(xSpeed, rot);
+  }
+
+  public void directDrive(ChassisSpeeds chassisSpeeds) {
+    var wheelSpeeds = m_kinematics.toWheelSpeeds(chassisSpeeds);
+
+    setSpeeds(wheelSpeeds);
+
   }
 
     /**
@@ -217,6 +218,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @param maxOutput the maximum output to which the drive will be constrained
    */
     public void setMaxOutput(double maxOutput) {
-        //m_drive.setMaxOutput(maxOutput);
+        m_leftMasterPIDController.setOutputRange(maxOutput, maxOutput, 0);
+        m_rightMasterPIDController.setOutputRange(maxOutput, maxOutput, 0);
     }
 }

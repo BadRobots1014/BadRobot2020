@@ -21,6 +21,11 @@ public final class Constants {
         public static int kAttachmentsController = 1;
     }
 
+    public static final class AccessoryConstants {
+        public static final int kGathererPort = 34;
+        public static final int kFeedPort = 21;
+    }
+
     public static final class DriveConstants {
         public static final int kRightMotor1Port = 1;
         public static final int kRightMotor2Port = 3;
@@ -57,6 +62,7 @@ public final class Constants {
         public static final double kTurnToleranceDeg = 10;
         public static final double kTurnRateToleranceDegPerS = 10;//degree per sencond
 
+        public static final int kCurrentLimit = 40;
     }
 
     public static final class AutoConstants{
@@ -64,5 +70,10 @@ public final class Constants {
         public static final double kMaxAccelerationMetersPerSecondSquared = 1;
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
+    }
+
+    public static final class LEDConstants{
+        public static final int kLEDPwmPort = 9;
+        public static final int kLEDStrandLength = 150;
     }
 }

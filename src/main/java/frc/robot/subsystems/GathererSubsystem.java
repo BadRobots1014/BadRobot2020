@@ -24,8 +24,10 @@ public class GathererSubsystem extends SubsystemBase {
     m_gatherer.setInverted(false);
   }
 
-  public void setGatherSpeed()
-  {
+  public void setGatherSpeed() {
     m_gatherer.set(ControlMode.PercentOutput, kGathererSpeed);
+  }
+  public void stopGather() {
+    m_gatherer.set(ControlMode.PercentOutput, 0);
   }
 }

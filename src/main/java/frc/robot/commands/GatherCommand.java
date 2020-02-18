@@ -35,6 +35,7 @@ public class GatherCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_gatherer.stopGather();
   }
 
   // Returns true when the command should end.

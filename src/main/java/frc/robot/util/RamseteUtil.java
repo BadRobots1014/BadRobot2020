@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 /**
@@ -37,22 +36,14 @@ public class RamseteUtil {
             DriverStation.reportError("Unable to open trajectory: " + pathWeatherJsonPath, ex.getStackTrace());
             return new WaitCommand(1);
         }    
+
+        RamseteCommand ramseteCommand = new RamseteCommand(trajectory,
+         driveTrain::getPose,
+         new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+         driveTrain.getDriveKinematics(), 
+         driveTrain::setSpeeds, 
+         driveTrain);
         
-        RamseteCommand ramseteCommand = new RamseteCommand(
-            trajectory,
-            driveTrain::getPose,
-            new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-            new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                    DriveConstants.kvVoltSecondsPerMeter,
-                                    DriveConstants.kaVoltSecondsSquaredPerMeter),
-            driveTrain.getDriveKinematics(),
-            driveTrain::getWheelSpeeds,
-            new PIDController(.0187, 0, 0),
-            new PIDController(.0187, 0, 0),
-            // RamseteCommand passes volts to the callback
-            driveTrain::tankDriveVolts,
-            driveTrain
-        );
         return ramseteCommand;
     }
 }

@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrainSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.LEDSubsystem.LEDState;
 import frc.robot.util.RamseteUtil;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -21,23 +23,33 @@ public class AutoDriveExamplePathCommandGroup extends SequentialCommandGroup {
   /**
    * Creates a new AutoDriveCommandGroup.
    */
-
+  LEDSubsystem m_lights;
   public AutoDriveExamplePathCommandGroup(DriveTrainSubsystem driveTrain) {    
-    
+    //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                   .beforeStarting(() -> driveTrain.setPose(new Pose2d(0, -3, new Rotation2d(0))))
-                  .andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+                  .andThen(() -> driveTrain.stop()),
                 new PrintCommand("Finished Driving Path"),
                 RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
-                .andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+                .andThen(() -> driveTrain.stop()),
                 RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
-                .andThen(() -> driveTrain.tankDriveVolts(0, 0)),
+                .andThen(() -> driveTrain.stop()),
                 RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
-                .andThen(() -> driveTrain.tankDriveVolts(0, 0))
+                .andThen(() -> driveTrain.stop())
     );
-
   }
+
+  // @Override
+  // public void initialize() {
+  //   boolean autoColorRed = true;
+  //   if (autoColorRed) {
+  //     m_lights.setLightsPattern(LEDState.kRED);
+  //   }
+  //   else {
+  //     m_lights.setLightsPattern(LEDState.kBLUE);
+  //   }
+  // }
 
   // For reference:
   // Create a voltage constraint to ensure we don't accelerate too fast
