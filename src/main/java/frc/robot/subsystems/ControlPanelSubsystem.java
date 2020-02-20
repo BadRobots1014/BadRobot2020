@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorMatch;
 
@@ -54,6 +55,10 @@ public class ControlPanelSubsystem extends SubsystemBase {
       colorChar = '?';
     }
     return colorChar;
+  }
+
+  public void spinWheel(double power) {
+    m_spinningMotor.set(ControlMode.PercentOutput, power);
   }
 
   public Color getColorRGB() {
