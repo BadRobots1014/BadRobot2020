@@ -71,7 +71,7 @@ public class RobotContainer {
   private final XboxController m_driverController = new XboxController(OIConstants.kDriverController);
   private final XboxController m_attachmentsController = new XboxController(OIConstants.kAttachmentsController);
 
-  private final GyroProvider m_gyroProvider;
+  public final GyroProvider m_gyroProvider;
   private final SparkMaxProvider m_speedControllerProvider;
   
   private final LEDSubsystem m_LEDSubsystem;
@@ -155,14 +155,13 @@ public class RobotContainer {
     // .whenReleased(() -> m_driveTrain.setMaxOutput(1));
 
     //new JoystickButton(m_driverController, Button.kBumperLeft.value).whenHeld(new DriveStraight(leftYJoystick, m_gyroProvider, m_driveTrain));
-    new JoystickButton(m_driverController, Button.kA.value)
-    .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 90, Math.PI/2, 10));
 
+    // Bump
     new JoystickButton(m_driverController, Button.kBumperLeft.value)
-    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, -4, Math.PI/2, 10));
+    .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, -5));
 
     new JoystickButton(m_driverController, Button.kBumperRight.value)
-    .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 4, Math.PI/2, 10));
+    .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 5));
 
     new JoystickButton(m_driverController, Button.kX.value)
     .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, (-5.0 / 11.0) * (Robot.getCenterX() - 65), Math.PI/2, 10));
