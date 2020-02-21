@@ -67,16 +67,20 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public static final int kShooterId = 10;
-        public static final boolean kShooterReversed = false;
-        public static final double kMaxPercentOutput = 0.5;
-        public static final double kEncoderConstant = 1.462847143; // multiply desired rpm by this to get encoder units
-        public static final double kDesiredAngularSpeed = 4500; // rotations per minute -- placeholder value
-        public static final double kDesiredActiveCurrent = 3; // in amps -- placeholder value
+        public static final boolean kShooterReversed = true;
 
-        public static final double kFeedThresholdAngularSpeedDelta = 10; // placeholder value
+        public static final double kMaxPercentOutput = 0.65;
+        public static final double kF = 0.1968269231;
+        public static final double kP = 0.1;
+        public static final double kEncoderConstant = 1.462847143; // multiply desired rpm by this to get encoder units
+
+        public static final double kDesiredAngularSpeed = 5200.00; // encoder units
+        public static final double kDesiredActiveCurrent = 24.00; // in amps
+
+        public static final double kFeedThresholdAngularSpeedDelta = 50.00;
 
         public static final double kShootThresholdAngularSpeedDelta = -500; // placeholder value
-        public static final double kShootThresholdActiveCurrentDelta = 3; // placeholder value
+        public static final double kShootThresholdActiveCurrentDelta = 4.000;
 
         public static final double kDelay = 1.0;
     }

@@ -19,7 +19,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class SingleFireCommandGroup extends ParallelCommandGroup {
+public class SingleFireCommandGroup extends ParallelRaceGroup {
   /**
    * Creates a new SingleFireCommandGroup.
    */
@@ -30,8 +30,8 @@ public class SingleFireCommandGroup extends ParallelCommandGroup {
       new RunShooterCommand(m_shooterSubsystem),
       new SequentialCommandGroup(
         new WaitUntilCommand(() -> {
-          if (m_shooterSubsystem.getDeltaDesiredVelocity() >= ShooterConstants.kFeedThresholdAngularSpeedDelta
-          || m_shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kFeedThresholdAngularSpeedDelta) {
+          if (m_shooterSubsystem.getDeltaDesiredVelocity() >= -ShooterConstants.kFeedThresholdAngularSpeedDelta
+          && m_shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kFeedThresholdAngularSpeedDelta) {
             return true;
           } else {
             return false;
@@ -40,8 +40,9 @@ public class SingleFireCommandGroup extends ParallelCommandGroup {
         new ParallelRaceGroup(
           new FeedCommand(m_feedSubsystem),
           new WaitUntilCommand(() -> {
-            if (m_shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta
-            && m_shooterSubsystem.getDeltaDesiredActiveCurrent() >= ShooterConstants.kShootThresholdActiveCurrentDelta) {
+            if (m_shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta // should be negative
+            //&& m_shooterSubsystem.getDeltaDesiredActiveCurrent() >= ShooterConstants.kShootThresholdActiveCurrentDelta
+            ) {
               return true;
             } else {
               return false;

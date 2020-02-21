@@ -22,16 +22,19 @@ public class ShooterSubsystem extends SubsystemBase {
   private final ShuffleboardTab m_shooterTab = Shuffleboard.getTab("Shooter");
   private final NetworkTableEntry m_velocityEntry = m_shooterTab.add("Shooter Velocity", 0).getEntry();
   private final NetworkTableEntry m_currentEntry = m_shooterTab.add("Shooter Current", 0).getEntry();
+  private final NetworkTableEntry m_deltaVelocityEntry = m_shooterTab.add("Delta Velocity", 0).getEntry();
   /**
    * Creates a new ExampleSubsystem.
    */
   public ShooterSubsystem() {
     m_shooterMotor.setNeutralMode(NeutralMode.Coast);
     m_shooterMotor.setInverted(ShooterConstants.kShooterReversed);
+    m_shooterMotor.config_kF(0, ShooterConstants.kF);
+    m_shooterMotor.config_kP(0, ShooterConstants.kP);
   }
 
   public void setMaxSpeed() {
-    m_shooterMotor.set(TalonFXControlMode.PercentOutput, ShooterConstants.kMaxPercentOutput);
+    m_shooterMotor.set(TalonFXControlMode.Velocity, ShooterConstants.kDesiredAngularSpeed);
   }
 
   public void setZeroSpeed() {
@@ -39,18 +42,19 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void updateEntries() {
-    m_velocityEntry.setDouble(m_shooterMotor.getSelectedSensorVelocity() / ShooterConstants.kEncoderConstant);
-    m_currentEntry.setDouble(m_shooterMotor.getSupplyCurrent());
+    m_velocityEntry.setDouble(m_shooterMotor.getSelectedSensorVelocity());
+    m_currentEntry.setDouble(m_shooterMotor.getStatorCurrent());
+    m_deltaVelocityEntry.setDouble(m_velocityEntry.getDouble(ShooterConstants.kDesiredAngularSpeed) - ShooterConstants.kDesiredAngularSpeed);
   }
 
   // Return the difference between the desired velocity and the current velocity
   // Guages what's going on with the motor.
   public double getDeltaDesiredVelocity() {
-    return  m_velocityEntry.getDouble(ShooterConstants.kDesiredAngularSpeed) - ShooterConstants.kDesiredAngularSpeed ;
+    return m_velocityEntry.getDouble(ShooterConstants.kDesiredAngularSpeed) - ShooterConstants.kDesiredAngularSpeed;
   }
 
   public double getDeltaDesiredActiveCurrent() {
-    return  m_currentEntry.getDouble(ShooterConstants.kDesiredActiveCurrent) - ShooterConstants.kDesiredActiveCurrent;
+    return m_currentEntry.getDouble(ShooterConstants.kDesiredActiveCurrent) - ShooterConstants.kDesiredActiveCurrent;
   }
   
   @Override
