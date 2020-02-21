@@ -153,6 +153,10 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kBumperRight.value)
     .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 4, Math.PI/2, 10));
 
+    new JoystickButton(m_driverController, Button.kX.value)
+    .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, (-5.0 / 11.0) * (Robot.getCenterX() - 65), Math.PI/2, 10));
+
+
     new JoystickButton(m_driverController, Button.kB.value)
     .whileHeld(m_holdPlaceCommand);
 

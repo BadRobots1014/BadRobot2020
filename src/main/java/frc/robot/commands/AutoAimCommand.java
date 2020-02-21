@@ -8,24 +8,26 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.util.GyroProvider;
+import frc.robot.Robot;
 
-public class TurnCommand extends CommandBase {
-    private final DriveTrainSubsystem m_driveTrain;
+public class AutoAimCommand extends TurnCommand {
+  private final DriveTrainSubsystem m_driveTrain;
     private final GyroProvider m_gyro;
     private double m_startHeading, m_endHeading;
     private boolean m_deltaHeadingDirection; // true is clockwise
     private final double m_angle, m_speed;
-    // private final double m_threshold;
+    
+    private double centerX = Robot.getCenterX();
   /**
-   * Creates a new TurnCommand.
+   * Creates a new AutoAimCommand.
    */
-  public TurnCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro, double angle, double speed, double threshold) {
+  public AutoAimCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro, double speed, double threshold) {
+    super(driveTrain, gyro, speed, speed, threshold);
     m_driveTrain = driveTrain;
     m_gyro = gyro;
-    m_angle = angle;
+    m_angle = (5 / 13) * (centerX - 65);
     m_speed = speed;
     // m_threshold = threshold;
 
@@ -35,54 +37,21 @@ public class TurnCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println(m_angle);
-    m_startHeading = m_gyro.getRawAngle();
-    m_endHeading = m_gyro.getRawAngle() + m_angle;
-    if ((m_endHeading - m_startHeading) >= 0) {
-        m_deltaHeadingDirection = true;
-    } else {
-        m_deltaHeadingDirection = false;
-    }
-    System.out.println(m_angle);
-    System.out.println(Robot.getCenterX());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_deltaHeadingDirection) {
-        if (m_gyro.getRawAngle() < (m_endHeading)) {
-            m_driveTrain.arcadeDrive(0.0, -m_speed);
-        }
-    } else {
-        if (m_gyro.getRawAngle() > (m_endHeading)) {
-            m_driveTrain.arcadeDrive(0.0, m_speed);
-        }
-    }
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {    
-      m_driveTrain.stop();
+  public void end(boolean interrupted) {
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_deltaHeadingDirection) {
-        if (m_gyro.getRawAngle() >= (m_endHeading)) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        if (m_gyro.getRawAngle() <= (m_endHeading)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    return false;
   }
 }

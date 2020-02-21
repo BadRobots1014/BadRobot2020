@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
   private static final int IMG_HEIGHT = 240;
 
   private VisionThread visionThread;
-  private double centerX = 0.0;
+  private static double centerX = 0.0;
 
   private final Object imgLock = new Object();
 
@@ -141,21 +141,26 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double[] areas = table.getEntry("area").getDoubleArray(defaultValue);
 
-    System.out.print("areas: " );
+    if (areas.length > 0) {
+      System.out.print("areas: " );
+    }
 
     for (double area : areas) {
       System.out.print(area + " ");
     }
+  
+    // System.out.println(getCenterX());
 
-    System.out.println();
-
-    double centerX;
-    synchronized (imgLock) {
-        centerX = this.centerX;
-    }
-
-    System.out.println(centerX);
+    // System.out.println((-5.0 / 11.0) * (centerX - 65));
   }
+
+  /**
+   * @return the centerX
+   */
+  public static double getCenterX() {
+    return centerX;
+  }
+  
 
   @Override
   public void testInit() {
