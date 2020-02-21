@@ -141,6 +141,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    /*
     double[] areas = table.getEntry("area").getDoubleArray(defaultValue);
 
     System.out.print("areas: " );
@@ -157,6 +158,9 @@ public class Robot extends TimedRobot {
     }
 
     System.out.println(centerX);
+    */
+
+    System.out.println(m_robotContainer.m_gyroProvider.getRawAngle());
   }
 
   @Override
