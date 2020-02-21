@@ -44,7 +44,6 @@ public final class Constants {
       
         public static final double kTrackWidth = 0.689796288; // meters
         public static final double kWheelDiameter = 0.1524; // meters
-        //public static final double kPDriveVel = 1.0;
         public static final double kDriveGearing = 10.75;
         
         public static final double ksVolts = 0.151;
