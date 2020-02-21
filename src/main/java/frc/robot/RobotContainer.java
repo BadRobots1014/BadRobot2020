@@ -31,6 +31,10 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AccessoryConstants;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
+import frc.robot.commands.AutoLeftCommand;
+import frc.robot.commands.AutoLeftCornerCommand;
+import frc.robot.commands.AutoMiddleCommand;
+import frc.robot.commands.AutoRightCommand;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.HoldPlaceCommand;
@@ -75,6 +79,10 @@ public class RobotContainer {
   private final AddressableLED m_LED;
 
   private final AutoDriveExamplePathCommandGroup m_exampleDrive;
+  private final AutoLeftCornerCommand m_autoLeftCorner;
+  private final AutoLeftCommand m_autoLeft;
+  private final AutoMiddleCommand m_autoMiddle;
+  private final AutoRightCommand m_autoRight;
   private final RainbowLedCommand m_defaultLedCommand;
   private HoldPlaceCommand m_holdPlaceCommand;
 
@@ -115,6 +123,10 @@ public class RobotContainer {
     */
 
     m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
+    m_autoLeftCorner = new AutoLeftCornerCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
+    m_autoLeft = new AutoLeftCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
+    m_autoMiddle = new AutoMiddleCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
+    m_autoRight = new AutoRightCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
     // Configure SmartDashboard Tabs
     configureAutonomousTab();
 
@@ -185,8 +197,9 @@ public class RobotContainer {
   private void configureAutonomousTab()
   {
     m_autonomousChooser = new SendableChooser<Command>();
-    m_autonomousChooser.addOption("Hold Place", m_holdPlaceCommand);
     m_autonomousChooser.setDefaultOption("Example Path Drive", m_exampleDrive);
+    m_autonomousChooser.addOption("Far Left", m_autoLeftCorner);
+    m_autonomousChooser.addOption("Hold Place", m_holdPlaceCommand);
 
     //m_autonomousChooser.setDefaultOption("Hold Place", m_holdPlaceCommand);
 
