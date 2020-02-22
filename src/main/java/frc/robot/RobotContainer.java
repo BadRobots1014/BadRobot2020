@@ -35,7 +35,8 @@ import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.HoldPlaceCommand;
 import frc.robot.commands.RainbowLedCommand;
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.RunShooterCommand;
+import frc.robot.commands.SingleFireCommandGroup;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -62,7 +63,7 @@ public class RobotContainer {
   private final TeleopDriveCommand m_teleopDriveCommand;
   private final GatherCommand m_gatherCommand;
   private final FeedCommand m_feedCommand;
-  private final ShootCommand m_shootCommand;
+  private final RunShooterCommand m_shootCommand;
 
   private final XboxController m_driverController = new XboxController(OIConstants.kDriverController);
   private final XboxController m_attachmentsController = new XboxController(OIConstants.kAttachmentsController);
@@ -102,7 +103,7 @@ public class RobotContainer {
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
     m_feedCommand = new FeedCommand(m_feedSubsystem);
     m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
-    m_shootCommand = new ShootCommand(m_shooterSubsystem);
+    m_shootCommand = new RunShooterCommand(m_shooterSubsystem);
 
     // Configure the button bindings
     m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem, m_driverController, m_attachmentsController);
@@ -164,7 +165,10 @@ public class RobotContainer {
     .toggleWhenPressed(m_feedCommand);
 
     new JoystickButton(m_driverController, Button.kY.value)
-    .toggleWhenPressed(m_shootCommand);
+    .whenHeld(m_shootCommand);
+    
+    new JoystickButton(m_driverController, Button.kX.value)
+    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_feedSubsystem));
 
   }
 

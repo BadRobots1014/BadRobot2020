@@ -66,7 +66,7 @@ public final class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final int kShooterId = 10;
+        public static final int kShooterId = 20;
         public static final boolean kShooterReversed = true;
 
         public static final double kMaxPercentOutput = 0.65;
