@@ -141,6 +141,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    /*
     double[] areas = table.getEntry("area").getDoubleArray(defaultValue);
 
     if (areas.length > 0) {
