@@ -35,7 +35,8 @@ public class AutoLeftCornerCommand extends SequentialCommandGroup {
     addCommands(new ShootCommand(shooter)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedLeftCollect.wpilib.json", driveTrain)
-                .raceWith(new GatherCommand(gatherer), new FeedCommand(feeder)).beforeStarting(() -> driveTrain.setPose(new Pose2d(2.912, -0.692, new Rotation2d(0))))
+                .raceWith(new GatherCommand(gatherer), new FeedCommand(feeder))
+                .beforeStarting(() -> driveTrain.setPose(new Pose2d(2.912, -0.692, new Rotation2d(0))))
                 .andThen(() -> driveTrain.stop())
                 .andThen(() -> gatherer.stopGather())
                 .andThen(() -> feeder.stopFeed()),

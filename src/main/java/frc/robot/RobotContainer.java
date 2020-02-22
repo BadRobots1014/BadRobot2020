@@ -199,7 +199,6 @@ public class RobotContainer {
   private void configureGatherer() {
     m_gathererSubsystem.setDefaultCommand(m_gatherCommand);
   }
-
   private void configureFeeder() {
     m_feedSubsystem.setDefaultCommand(m_feedCommand);
   }
@@ -210,6 +209,9 @@ public class RobotContainer {
     m_autonomousChooser = new SendableChooser<Command>();
     m_autonomousChooser.setDefaultOption("Example Path Drive", m_exampleDrive);
     m_autonomousChooser.addOption("Far Left", m_autoLeftCorner);
+    m_autonomousChooser.addOption("Left", m_autoLeft);
+    m_autonomousChooser.addOption("Middle", m_autoMiddle);
+    m_autonomousChooser.addOption("Right", m_autoRight);
     m_autonomousChooser.addOption("Hold Place", m_holdPlaceCommand);
     m_autonomousChooser.addOption("Hold Place", m_AutoAimCommand);
 

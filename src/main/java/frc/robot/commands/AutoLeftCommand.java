@@ -33,6 +33,7 @@ public class AutoLeftCommand extends SequentialCommandGroup {
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/RedLeftStart.wpilib.json", driveTrain)
+                .beforeStarting(() -> driveTrain.setPose(new Pose2d(3.198, -2.357, new Rotation2d(0))))
                 .andThen(() -> driveTrain.stop()),
                 new ShootCommand(shooter)
                 .andThen(() -> driveTrain.stop()), 
