@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AccessoryConstants;
 import frc.robot.Constants.LEDConstants;
-import frc.robot.commands.AutoAimCommand;
+import frc.robot.commands.AimCommand;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
 import frc.robot.commands.AutoLeftCommand;
 import frc.robot.commands.AutoLeftCornerCommand;
@@ -87,7 +87,7 @@ public class RobotContainer {
   private final AutoRightCommand m_autoRight;
   private final RainbowLedCommand m_defaultLedCommand;
   private HoldPlaceCommand m_holdPlaceCommand;
-  private AutoAimCommand m_AutoAimCommand;
+  private AimCommand m_AutoAimCommand;
 
   private final ShuffleboardTab m_autonomousShuffleboardTab = Shuffleboard.getTab("Autonomous");
   private SendableChooser<Command> m_autonomousChooser;
@@ -113,7 +113,7 @@ public class RobotContainer {
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
     m_feedCommand = new FeedCommand(m_feedSubsystem);
     m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
-    m_AutoAimCommand = new AutoAimCommand(m_driveTrain, m_gyroProvider, Robot::getCenterX);
+    m_AutoAimCommand = new AimCommand(m_driveTrain, m_gyroProvider, Robot::getCenterX);
     m_shootCommand = new ShootCommand(m_shooterSubsystem);
 
     // Configure the button bindings
