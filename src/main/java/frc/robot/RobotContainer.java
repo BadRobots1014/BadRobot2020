@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -145,18 +146,20 @@ public class RobotContainer {
     DoubleSupplier leftAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kLeft);
     DoubleSupplier rightAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kRight);
 
+    BooleanSupplier driverQuickTurn = () -> m_driverController.getTriggerAxis(Hand.kLeft) > 0;
+
     DoubleSupplier rightJoystick = () -> m_driverController.getX(Hand.kRight);
     ;
 
-    m_teleopDriveCommand.setControllerSupplier(leftYJoystick, rightJoystick);
+    m_teleopDriveCommand.setControllerSupplier(leftYJoystick, rightJoystick, driverQuickTurn);
 
     // new JoystickButton(m_driverController, Button.kBumperRight.value)
     // .whenPressed(() -> m_driveTrain.setMaxOutput(0.25))
     // .whenReleased(() -> m_driveTrain.setMaxOutput(1));
 
     //new JoystickButton(m_driverController, Button.kBumperLeft.value).whenHeld(new DriveStraight(leftYJoystick, m_gyroProvider, m_driveTrain));
-    new JoystickButton(m_driverController, Button.kA.value)
-    .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 90, Math.PI/2, 10));
+    //new JoystickButton(m_driverController, Button.kA.value)
+    //.whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 90, Math.PI/2, 10));
 
     new JoystickButton(m_driverController, Button.kBumperLeft.value)
     .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, -4, Math.PI/2, 10));
