@@ -29,13 +29,13 @@ public class FeedCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_feeder.setFeedSpeed();
+    // m_feeder.setFeedSpeed();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_feeder.stopFeed();
+    // m_feeder.stopFeed();
   }
 
   // Returns true when the command should end.
