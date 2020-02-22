@@ -33,16 +33,16 @@ public class AutoRightCommand extends SequentialCommandGroup {
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/RedRightStart.wpilib.json", driveTrain)
+                .beforeStarting(() -> driveTrain.setPose(new Pose2d(2.995, -5.855, new Rotation2d(0))))
                 .andThen(() -> driveTrain.stop()),
-                new ShootCommand(shooter)
+                new SingleFireCommandGroup(shooter, feeder)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedToLeft.wpilib.json", driveTrain)
                 .andThen(() -> driveTrain.stop()),
                 RamseteUtil.getRamseteCommandForPath("paths/RedLeftCollect.wpilib.json", driveTrain)
-                .raceWith(new GatherCommand(gatherer), new FeedCommand(feeder))
+                .raceWith(new GatherCommand(gatherer))
                 .andThen(() -> driveTrain.stop())
                 .andThen(() -> gatherer.stopGather())
-                .andThen(() -> feeder.stopFeed())
     );
   }
 }

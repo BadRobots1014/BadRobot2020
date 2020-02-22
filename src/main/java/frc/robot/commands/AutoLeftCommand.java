@@ -35,14 +35,13 @@ public class AutoLeftCommand extends SequentialCommandGroup {
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/RedLeftStart.wpilib.json", driveTrain)
                 .beforeStarting(() -> driveTrain.setPose(new Pose2d(3.198, -2.357, new Rotation2d(0))))
                 .andThen(() -> driveTrain.stop()),
-                new ShootCommand(shooter)
+                new SingleFireCommandGroup(shooter, feeder)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedMiddleCollect.wpilib.json", driveTrain)
-                .raceWith(new GatherCommand(gatherer), new FeedCommand(feeder))
+                .raceWith(new GatherCommand(gatherer))
                 .andThen(() -> driveTrain.stop())
-                .andThen(() -> gatherer.stopGather())
-                .andThen(() -> feeder.stopFeed()),
-                new ShootCommand(shooter)
+                .andThen(() -> gatherer.stopGather()),
+                new SingleFireCommandGroup(shooter, feeder)
                 .andThen(() -> driveTrain.stop())
     );
   }

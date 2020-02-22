@@ -128,7 +128,7 @@ public class RobotContainer {
     */
 
     m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
-    m_autoLeftCorner = new AutoLeftCornerCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
+    m_autoLeftCorner = new AutoLeftCornerCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem, m_gyroProvider);
     m_autoLeft = new AutoLeftCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
     m_autoMiddle = new AutoMiddleCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
     m_autoRight = new AutoRightCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);

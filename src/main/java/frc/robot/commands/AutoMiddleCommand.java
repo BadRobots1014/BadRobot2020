@@ -33,15 +33,15 @@ public class AutoMiddleCommand extends SequentialCommandGroup {
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/RedMiddleStart.wpilib.json", driveTrain)
+                .beforeStarting(() -> driveTrain.setPose(new Pose2d(3.043, -3.916, new Rotation2d(0))))
                 .andThen(() -> driveTrain.stop()),
-                new ShootCommand(shooter)
+                new SingleFireCommandGroup(shooter, feeder)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedMiddleCollect.wpilib.json", driveTrain)
-                .raceWith(new GatherCommand(gatherer), new FeedCommand(feeder))
+                .raceWith(new GatherCommand(gatherer))
                 .andThen(() -> driveTrain.stop())
-                .andThen(() -> gatherer.stopGather())
-                .andThen(() -> feeder.stopFeed()),
-                new ShootCommand(shooter)
+                .andThen(() -> gatherer.stopGather()),
+                new SingleFireCommandGroup(shooter, feeder)
                 .andThen(() -> driveTrain.stop())
     );
   }

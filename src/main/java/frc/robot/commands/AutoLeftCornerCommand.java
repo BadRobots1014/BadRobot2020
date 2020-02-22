@@ -17,6 +17,7 @@ import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.LEDSubsystem.LEDState;
+import frc.robot.util.GyroProvider;
 import frc.robot.util.RamseteUtil;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -29,20 +30,23 @@ public class AutoLeftCornerCommand extends SequentialCommandGroup {
     LEDSubsystem m_lights;
 
     public AutoLeftCornerCommand(DriveTrainSubsystem driveTrain, ShooterSubsystem shooter, 
-    GathererSubsystem gatherer, FeedSubsystem feeder) {
+    GathererSubsystem gatherer, FeedSubsystem feeder, GyroProvider gyro) {
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
-    addCommands(new ShootCommand(shooter)
+    addCommands(new TurnCommand(driveTrain, gyro, -135)
+                .andThen(() -> driveTrain.stop()),
+                new SingleFireCommandGroup(shooter, feeder)
+                .andThen(() -> shooter.setZeroSpeed()),
+                new TurnCommand(driveTrain, gyro, 135)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedLeftCollect.wpilib.json", driveTrain)
-                .raceWith(new GatherCommand(gatherer), new FeedCommand(feeder))
+                .raceWith(new GatherCommand(gatherer))
                 .beforeStarting(() -> driveTrain.setPose(new Pose2d(2.912, -0.692, new Rotation2d(0))))
                 .andThen(() -> driveTrain.stop())
-                .andThen(() -> gatherer.stopGather())
-                .andThen(() -> feeder.stopFeed()),
+                .andThen(() -> gatherer.stopGather()),
                 RamseteUtil.getRamseteCommandForPath("paths/RedLeftReturn.wpilib.json", driveTrain)
                 .andThen(() -> driveTrain.stop()),
-                new ShootCommand(shooter)
+                new SingleFireCommandGroup(shooter, feeder)
                 .andThen(() -> driveTrain.stop())
     );
   }
