@@ -35,7 +35,6 @@ public class TurnCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println(m_angle);
     m_startHeading = m_gyro.getRawAngle();
     m_endHeading = m_gyro.getRawAngle() + m_angle;
     if ((m_endHeading - m_startHeading) >= 0) {
@@ -43,8 +42,6 @@ public class TurnCommand extends CommandBase {
     } else {
         m_deltaHeadingDirection = false;
     }
-    System.out.println(m_angle);
-    System.out.println(Robot.getCenterX());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

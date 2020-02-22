@@ -151,7 +151,7 @@ public class Robot extends TimedRobot {
       System.out.print(area + " ");
     }
   
-    // System.out.println(getCenterX());
+    System.out.println(getCenterX());
 
     // System.out.println((-5.0 / 11.0) * (centerX - 65));
   }

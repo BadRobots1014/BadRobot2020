@@ -1,55 +1,83 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.util.GyroProvider;
-import frc.robot.Robot;
 
-public class AutoAimCommand extends TurnCommand {
+/**
+ * A command that will turn the robot to the specified angle.
+ */
+public class AutoAimCommand extends CommandBase {
   private final DriveTrainSubsystem m_driveTrain;
-    private final GyroProvider m_gyro;
-    private double m_startHeading, m_endHeading;
-    private boolean m_deltaHeadingDirection; // true is clockwise
-    private final double m_angle, m_speed;
-    
-    private double centerX = Robot.getCenterX();
+  private final GyroProvider m_gyro;
+
+  private double m_desiredAngleToHold = 0;
+  private DoubleSupplier m_centerXDoubleSupplier;
+  
+  private final PIDController m_pidController = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
   /**
-   * Creates a new AutoAimCommand.
+   * Turns to robot to the specified angle.
+   *
+   * @param targetAngleDegrees The angle to turn to
+   * @param drive              The drive subsystem to use
    */
-  public AutoAimCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro, double speed, double threshold) {
-    super(driveTrain, gyro, speed, speed, threshold);
-    m_driveTrain = driveTrain;
-    m_gyro = gyro;
-    m_angle = (5 / 13) * (centerX - 65);
-    m_speed = speed;
-    // m_threshold = threshold;
 
+  public AutoAimCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro, DoubleSupplier centerXSupplier) {   
+    
     addRequirements(driveTrain);
+
+    m_gyro = gyro;
+    m_driveTrain = driveTrain;
+    m_centerXDoubleSupplier = centerXSupplier;
+    // Set the controller to be continuous (because it is an angle controller)
+    m_pidController.enableContinuousInput(-180, 180);
+    // Set the controller tolerance - the delta tolerance ensures the robot is
+    // stationary at the
+    // setpoint before it is considered as having reached the reference
+    m_pidController.setTolerance(DriveConstants.kTurnToleranceDeg, DriveConstants.kTurnRateToleranceDegPerS);
+
   }
 
-  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
+  public void initialize()
+  {
+    m_desiredAngleToHold = m_gyro.getHeading() + ((-5.0 / 11.0) * (m_centerXDoubleSupplier.getAsDouble() - 65));
+    m_pidController.setSetpoint(m_desiredAngleToHold);
+    System.out.println("Initialized holdcommand to hold angle at " + m_desiredAngleToHold);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
+  public void execute() 
+  {
+    // m_desiredAngleToHold = m_angleDoubleSupplier.getAsDouble();
+    double currentHeading = m_gyro.getHeading();
+    System.out.println(currentHeading + " " + m_desiredAngleToHold);
+    double pidOutput = m_pidController.calculate(currentHeading);
+    // Clamp the output so it doesn't try to turn too fast
+    double pidOutputClamped = MathUtil.clamp(pidOutput, -1, 1);
+    double speedToTurnToCorrect = 0;
+    if (Math.abs(pidOutputClamped) > 0.02) {
+      speedToTurnToCorrect = pidOutputClamped * DriveConstants.kMaxAngularSpeed;
+      m_driveTrain.arcadeDrive(0, speedToTurnToCorrect); 
+    } else {
+      m_driveTrain.arcadeDrive(0, 0);
+    }
+
+    SmartDashboard.putNumber("AutoAim SetPoint", m_pidController.getSetpoint());
+    SmartDashboard.putNumber("Current Angle", currentHeading);
+    SmartDashboard.putNumber("PID Output", pidOutputClamped);
+    SmartDashboard.putNumber("Turn rate to correct (in radians)", speedToTurnToCorrect);
   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-  }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

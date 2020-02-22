@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AccessoryConstants;
 import frc.robot.Constants.LEDConstants;
+import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
 import frc.robot.commands.AutoLeftCommand;
 import frc.robot.commands.AutoLeftCornerCommand;
@@ -85,6 +86,7 @@ public class RobotContainer {
   private final AutoRightCommand m_autoRight;
   private final RainbowLedCommand m_defaultLedCommand;
   private HoldPlaceCommand m_holdPlaceCommand;
+  private AutoAimCommand m_AutoAimCommand;
 
   private final ShuffleboardTab m_autonomousShuffleboardTab = Shuffleboard.getTab("Autonomous");
   private SendableChooser<Command> m_autonomousChooser;
@@ -110,6 +112,7 @@ public class RobotContainer {
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
     m_feedCommand = new FeedCommand(m_feedSubsystem);
     m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
+    m_AutoAimCommand = new AutoAimCommand(m_driveTrain, m_gyroProvider, Robot::getCenterX);
     m_shootCommand = new ShootCommand(m_shooterSubsystem);
 
     // Configure the button bindings
@@ -164,8 +167,8 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kBumperRight.value)
     .whenPressed(new TurnCommand(m_driveTrain,m_gyroProvider, 4, Math.PI/2, 10));
 
-    new JoystickButton(m_driverController, Button.kX.value)
-    .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, (-5.0 / 11.0) * (Robot.getCenterX() - 65), Math.PI/2, 10));
+    new JoystickButton(m_driverController, Button.kX.value)        //AutoAim Command
+    .whileHeld(m_AutoAimCommand);
 
 
     new JoystickButton(m_driverController, Button.kB.value)
@@ -204,8 +207,12 @@ public class RobotContainer {
     m_autonomousChooser.setDefaultOption("Example Path Drive", m_exampleDrive);
     m_autonomousChooser.addOption("Far Left", m_autoLeftCorner);
     m_autonomousChooser.addOption("Hold Place", m_holdPlaceCommand);
+    m_autonomousChooser.addOption("Hold Place", m_AutoAimCommand);
+
 
     //m_autonomousChooser.setDefaultOption("Hold Place", m_holdPlaceCommand);
+        //m_autonomousChooser.setDefaultOption("Hold Place", m_AutoAimCommand);
+
 
     m_autonomousShuffleboardTab.add("Autonomous Chooser", m_autonomousChooser);
   }
