@@ -15,14 +15,14 @@ import frc.robot.util.GyroProvider;
 /**
  * A command that will turn the robot to the specified angle.
  */
-public class AutoAimCommand extends CommandBase {
+public class AimCommand extends CommandBase {
   private final DriveTrainSubsystem m_driveTrain;
   private final GyroProvider m_gyro;
 
   private double m_desiredAngleToHold = 0;
   private DoubleSupplier m_centerXDoubleSupplier;
   
-  private final PIDController m_pidController = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
+  private final PIDController m_pidController = new PIDController(0.028, 0, 0);
   /**
    * Turns to robot to the specified angle.
    *
@@ -30,7 +30,7 @@ public class AutoAimCommand extends CommandBase {
    * @param drive              The drive subsystem to use
    */
 
-  public AutoAimCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro, DoubleSupplier centerXSupplier) {   
+  public AimCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro, DoubleSupplier centerXSupplier) {   
     
     addRequirements(driveTrain);
 
@@ -57,12 +57,16 @@ public class AutoAimCommand extends CommandBase {
   @Override
   public void execute() 
   {
+    m_desiredAngleToHold = m_gyro.getHeading() + ((-5.0 / 11.0) * (m_centerXDoubleSupplier.getAsDouble() - 65));
+    m_pidController.setSetpoint(m_desiredAngleToHold);
     // m_desiredAngleToHold = m_angleDoubleSupplier.getAsDouble();
     double currentHeading = m_gyro.getHeading();
+
     System.out.println(currentHeading + " " + m_desiredAngleToHold);
+
     double pidOutput = m_pidController.calculate(currentHeading);
     // Clamp the output so it doesn't try to turn too fast
-    double pidOutputClamped = MathUtil.clamp(pidOutput, -1, 1);
+    double pidOutputClamped = MathUtil.clamp(pidOutput, -0.18, 0.18);
     double speedToTurnToCorrect = 0;
     if (Math.abs(pidOutputClamped) > 0.02) {
       speedToTurnToCorrect = pidOutputClamped * DriveConstants.kMaxAngularSpeed;

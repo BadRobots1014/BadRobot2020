@@ -9,14 +9,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.HashMap;
 
-import edu.wpi.first.vision.VisionPipeline;
-
 import org.opencv.core.*;
 import org.opencv.core.Core.*;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.*;
 import org.opencv.objdetect.*;
+
+import edu.wpi.first.vision.VisionPipeline;
 
 /**
 * GripPipeline class.
@@ -54,9 +54,9 @@ public class ThePipeline implements VisionPipeline {
 
 		// Step HSV_Threshold0:
 		Mat hsvThresholdInput = cvResizeOutput;
-		double[] hsvThresholdHue = {0.0, 40.238907849829346};
-		double[] hsvThresholdSaturation = {158.7682396455717, 255.0};
-		double[] hsvThresholdValue = {87.24825224566109, 184.30887372013652};
+		double[] hsvThresholdHue = {69.4915254237288, 94.97326203208557};
+		double[] hsvThresholdSaturation = {57.62711864406781, 205.0};
+		double[] hsvThresholdValue = {67.23163841807909, 255.0};
 		hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
 
 		// Step CV_medianBlur0:
@@ -86,16 +86,16 @@ public class ThePipeline implements VisionPipeline {
 		// Step Filter_Contours0:
 		ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
 		double filterContoursMinArea = 10.0;
-		double filterContoursMinPerimeter = 0;
-		double filterContoursMinWidth = 0;
-		double filterContoursMaxWidth = 1000;
-		double filterContoursMinHeight = 0;
-		double filterContoursMaxHeight = 1000;
+		double filterContoursMinPerimeter = 0.0;
+		double filterContoursMinWidth = 0.0;
+		double filterContoursMaxWidth = 1000.0;
+		double filterContoursMinHeight = 0.0;
+		double filterContoursMaxHeight = 1000.0;
 		double[] filterContoursSolidity = {0, 100};
-		double filterContoursMaxVertices = 1000000;
-		double filterContoursMinVertices = 0;
-		double filterContoursMinRatio = 0;
-		double filterContoursMaxRatio = 1000;
+		double filterContoursMaxVertices = 1000000.0;
+		double filterContoursMinVertices = 0.0;
+		double filterContoursMinRatio = 0.0;
+		double filterContoursMaxRatio = 1000.0;
 		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
 
 	}
@@ -306,5 +306,9 @@ public class ThePipeline implements VisionPipeline {
 			output.add(contour);
 		}
 	}
+
+
+
+
 }
 

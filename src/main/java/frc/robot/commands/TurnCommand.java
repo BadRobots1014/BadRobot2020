@@ -52,7 +52,6 @@ public class TurnCommand extends CommandBase {
   @Override
   public void execute() {
     m_driveTrain.arcadeDrive(0, m_pidController.calculate(m_gyro.getHeading()));
-    System.out.println(m_pidController.calculate(m_gyro.getHeading()));
   }
 
   // Called once the command ends or is interrupted.

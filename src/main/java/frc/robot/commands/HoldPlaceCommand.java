@@ -56,7 +56,6 @@ public class HoldPlaceCommand extends CommandBase {
     m_desiredPoseToHold = m_driveTrain.getPose();
 
     m_pidController.setSetpoint(m_desiredAngleToHold);
-    System.out.println("Initialized holdcommand to hold angle at " + m_desiredAngleToHold);
   }
 
   @Override
