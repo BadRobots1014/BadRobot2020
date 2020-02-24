@@ -7,13 +7,12 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.FeedSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -23,24 +22,24 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
   /**
    * Creates a new SingleFireCommandGroup.
    */
-  public SingleFireCommandGroup(ShooterSubsystem m_shooterSubsystem, FeedSubsystem m_feedSubsystem) {
+  public SingleFireCommandGroup(ShooterSubsystem shooterSubsystem, MagazineSubsystem magSubsystem) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(
-      new RunShooterCommand(m_shooterSubsystem),
+      new RunShooterCommand(shooterSubsystem),
       new SequentialCommandGroup(
         new WaitUntilCommand(() -> {
-          if (m_shooterSubsystem.getDeltaDesiredVelocity() >= -ShooterConstants.kFeedThresholdAngularSpeedDelta
-          && m_shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kFeedThresholdAngularSpeedDelta) {
+          if (shooterSubsystem.getDeltaDesiredVelocity() >= -ShooterConstants.kFeedThresholdAngularSpeedDelta
+          && shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kFeedThresholdAngularSpeedDelta) {
             return true;
           } else {
             return false;
           }
         }),
         new ParallelRaceGroup(
-          new FeedCommand(m_feedSubsystem),
+          new RunMagazineMotorCommand(magSubsystem),
           new WaitUntilCommand(() -> {
-            if (m_shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta // should be negative
+            if (shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta // should be negative
             //&& m_shooterSubsystem.getDeltaDesiredActiveCurrent() >= ShooterConstants.kShootThresholdActiveCurrentDelta
             ) {
               return true;

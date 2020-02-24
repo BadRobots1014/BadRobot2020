@@ -10,14 +10,24 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MagazineConstants;
 
 public class MagazineSubsystem extends SubsystemBase {
   private final TalonSRX m_magazineMotor = new TalonSRX(MagazineConstants.kMotorPort);
-  private final AnalogInput m_sensor = new AnalogInput(MagazineConstants.kSensorPort);
+  private final AnalogInput m_inSensor = new AnalogInput(MagazineConstants.kInSensorPort);
+  private final AnalogInput m_outSensor = new AnalogInput(MagazineConstants.kOutSensorPort);
+  
+  private final ShuffleboardTab m_shooterTab = Shuffleboard.getTab("Shooting");
+
+  private final NetworkTableEntry m_inSensorState = m_shooterTab.add("Magazine input sensor state", true).getEntry();
+  private final NetworkTableEntry m_outSensorState = m_shooterTab.add("Magazine output sensor state", true).getEntry();
+  private final NetworkTableEntry m_ballCount = m_shooterTab.add("Magazine ball count", 0).getEntry();
   /**
    * Creates a new MagazineSubsystem.
    */
@@ -33,17 +43,42 @@ public class MagazineSubsystem extends SubsystemBase {
     m_magazineMotor.set(ControlMode.PercentOutput, 0);
   }
 
-  public boolean getSensorStatus() { // true is unobstructed
-    if (m_sensor.getValue() > 300) {
+  private boolean getInSensorState() { // true is unobstructed
+    if (m_inSensor.getValue() > MagazineConstants.kSensorThreshold) {
       return true;
     } else {
       return false;
     }
   }
 
+  private boolean getOutSensorState() { // true is unobstructed
+    if (m_outSensor.getValue() > MagazineConstants.kSensorThreshold) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private void updateBallCount() {
+    
+    if (m_inSensorState.getBoolean(true) == true && getInSensorState() == false) {
+      m_ballCount.setDouble(m_ballCount.getDouble(0) + 1);
+    }
+    
+    /*
+    if (m_outSensorState.getBoolean(true) == true && getOutSensorState() == false) {
+      m_ballCount.setDouble(m_ballCount.getDouble(0) - 1);
+    }
+    */
+    
+    m_inSensorState.setBoolean(getInSensorState());
+    // m_shooterTab.add("Magazine output sensor state", getOutSensorState());
+  }
+
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Magazine Sensor State", m_sensor.getValue());
+    updateBallCount();
+    SmartDashboard.putNumber("Magazine input sensor output", m_inSensor.getValue());
     // This method will be called once per scheduler run
   }
 }

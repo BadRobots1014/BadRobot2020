@@ -8,17 +8,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.FeedSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
 
-public class FeedCommand extends CommandBase {
-  private final FeedSubsystem m_feeder;  
+public class RunMagazineMotorCommand extends CommandBase {
+  private final MagazineSubsystem m_magSubsystem;
   /**
-   * Creates a new GatherCommand.
+   * Creates a new RunMagazineMotorCommand.
    */
-  public FeedCommand(FeedSubsystem subsystem) {
-    m_feeder = subsystem;
+  public RunMagazineMotorCommand(MagazineSubsystem magSubsystem) {
+    m_magSubsystem = magSubsystem;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(magSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -29,13 +30,13 @@ public class FeedCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // m_feeder.setFeedSpeed();
+    m_magSubsystem.runMotor();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // m_feeder.stopFeed();
+    m_magSubsystem.stopMotor();
   }
 
   // Returns true when the command should end.

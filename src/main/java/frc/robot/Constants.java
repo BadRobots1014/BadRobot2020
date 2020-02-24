@@ -92,9 +92,11 @@ public final class Constants {
 
     public static final class MagazineConstants {
         public static final int kMotorPort = 0; // PWM Speed Controller
-        public static final int kSensorPort = 0; // Analog input port
+        public static final int kInSensorPort = 0; // Analog input port
+        public static final int kOutSensorPort = 1; // Analog input port
         public static final double kMaxSpeed = 0.5;
         public static final double kSensorThreshold = 300;
+        public static final double kDelay = 0.2;
     }
 
     public static final class AutoConstants{
