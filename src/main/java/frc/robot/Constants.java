@@ -17,8 +17,14 @@ package frc.robot;
  */
 public final class Constants {
     public static final class OIConstants {
-        public static int kDriverController = 0;
-        public static int kAttachmentsController = 1;
+        public static final int kDriverController = 0;
+        public static final int kAttachmentsController = 1;
+        // If in single controller mode, put the controls on each button
+        public static enum ControllerSetup {
+            SINGLE_CONTROLLER,
+            DIAGNOSTIC,
+            COMPETITION
+        }
     }
 
     public static final class AccessoryConstants {

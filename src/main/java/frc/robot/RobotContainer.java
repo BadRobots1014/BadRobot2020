@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,10 +26,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.OIConstants.ControllerSetup;
 import frc.robot.Constants.AccessoryConstants;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.commands.AimCommand;
@@ -93,6 +96,7 @@ public class RobotContainer {
   private final ShuffleboardTab m_autonomousShuffleboardTab = Shuffleboard.getTab("Autonomous");
   private SendableChooser<Command> m_autonomousChooser;
 
+  private ControllerSetup controllerSetupMode = ControllerSetup.COMPETITION;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -120,12 +124,9 @@ public class RobotContainer {
     // Configure the button bindings
     m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem, m_driverController, m_attachmentsController);
     m_LEDSubsystem.setDefaultCommand(m_defaultLedCommand);
+    m_driveTrain.setDefaultCommand(m_teleopDriveCommand);
     configureButtonBindings();
-    configureDriveTrain();
-    /*
-    configureGatherer();
-    configureFeeder();
-    */
+    
 
     m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
     m_autoLeftCorner = new AutoLeftCornerCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem, m_gyroProvider);
@@ -146,40 +147,45 @@ public class RobotContainer {
    */
   private void configureButtonBindings()
   {
+    if (controllerSetupMode == ControllerSetup.COMPETITION) {
+      // Competition controls
+      configureDriverControls();
+      configureAttachmentControls();
+    } else if (controllerSetupMode == ControllerSetup.SINGLE_CONTROLLER) {
+      // Useful for when only a single controller is available
+      configureDriverControls();
+      configureSingleControllerControls();
+    } else if (controllerSetupMode == ControllerSetup.DIAGNOSTIC) {
+      // Use this mode to setup manual running of various systems
+      configureDiagnosticControls();
+    }
+
+  }
+
+  private void configureDriverControls() {
     DoubleSupplier leftYJoystick = () -> m_driverController.getY(Hand.kLeft);
-    DoubleSupplier leftAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kLeft);
-    DoubleSupplier rightAttatchmentJoystick = () -> m_attachmentsController.getY(Hand.kRight);
-
-    BooleanSupplier driverQuickTurn = () -> m_driverController.getTriggerAxis(Hand.kLeft) > 0;
-
     DoubleSupplier rightJoystick = () -> m_driverController.getX(Hand.kRight);
-    ;
-
+    BooleanSupplier driverQuickTurn = () -> m_driverController.getTriggerAxis(Hand.kLeft) > 0;
     m_teleopDriveCommand.setControllerSupplier(leftYJoystick, rightJoystick, driverQuickTurn);
 
-    // new JoystickButton(m_driverController, Button.kBumperRight.value)
-    // .whenPressed(() -> m_driveTrain.setMaxOutput(0.25))
-    // .whenReleased(() -> m_driveTrain.setMaxOutput(1));
-
-    //new JoystickButton(m_driverController, Button.kBumperLeft.value).whenHeld(new DriveStraight(leftYJoystick, m_gyroProvider, m_driveTrain));
-    //new JoystickButton(m_driverController, Button.kA.value)
-    //.whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 90, Math.PI/2, 10));
-
-    // Bump
     new JoystickButton(m_driverController, Button.kBumperLeft.value)
     .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, -5));
 
     new JoystickButton(m_driverController, Button.kBumperRight.value)
     .whenPressed(new TurnCommand(m_driveTrain, m_gyroProvider, 5));
 
-    new JoystickButton(m_driverController, Button.kX.value)        //AutoAim Command
+    //AutoAim Command
+    new JoystickButton(m_driverController, Button.kX.value)
     .whileHeld(m_AutoAimCommand);
-
 
     new JoystickButton(m_driverController, Button.kB.value)
     .whileHeld(m_holdPlaceCommand);
 
-    // Added ability to toggle commands
+
+  }
+
+  private void configureSingleControllerControls() {
+
     new JoystickButton(m_driverController, Button.kBack.value)
     .toggleWhenPressed(m_gatherCommand);
 
@@ -189,24 +195,30 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kY.value)
     .whenHeld(m_shootCommand);
     
-    new JoystickButton(m_driverController, Button.kX.value)
+    new JoystickButton(m_driverController, Button.kA.value)
     .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_feedSubsystem));
-
   }
 
-  private void configureDriveTrain()
+  private void configureAttachmentControls()
   {
-    m_driveTrain.setDefaultCommand(m_teleopDriveCommand);
+
+    new JoystickButton(m_attachmentsController, Button.kBack.value)
+    .toggleWhenPressed(m_gatherCommand);
+
+    new JoystickButton(m_attachmentsController, Button.kStart.value)
+    .toggleWhenPressed(m_feedCommand);
+
+    new JoystickButton(m_attachmentsController, Button.kY.value)
+    .whenHeld(m_shootCommand);
+    
+    new JoystickButton(m_attachmentsController, Button.kA.value)
+    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_feedSubsystem));
+    
   }
 
-  /*
-  private void configureGatherer() {
-    m_gathererSubsystem.setDefaultCommand(m_gatherCommand);
+  private void configureDiagnosticControls() {
+    // TODO
   }
-  private void configureFeeder() {
-    m_feedSubsystem.setDefaultCommand(m_feedCommand);
-  }
-  */
 
   private void configureAutonomousTab()
   {
@@ -216,12 +228,7 @@ public class RobotContainer {
     m_autonomousChooser.addOption("Left", m_autoLeft);
     m_autonomousChooser.addOption("Middle", m_autoMiddle);
     m_autonomousChooser.addOption("Right", m_autoRight);
-    m_autonomousChooser.addOption("Hold Place", m_holdPlaceCommand);
-    m_autonomousChooser.addOption("Hold Place", m_AutoAimCommand);
-
-
-    //m_autonomousChooser.setDefaultOption("Hold Place", m_holdPlaceCommand);
-        //m_autonomousChooser.setDefaultOption("Hold Place", m_AutoAimCommand);
+    m_autonomousChooser.addOption("Hold Place", new PrintCommand("Not doing anything for auton"));
 
 
     m_autonomousShuffleboardTab.add("Autonomous Chooser", m_autonomousChooser);
