@@ -24,10 +24,8 @@ public class HoldPlaceCommand extends CommandBase {
   private final GyroProvider m_gyro;
 
   private double m_desiredAngleToHold = 0;
-  private Pose2d m_desiredPoseToHold = new Pose2d();
   
   private final PIDController m_pidController = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
-  private final RamseteController m_ramseteController = new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta);
   /**
    * Turns to robot to the specified angle.
    *
@@ -53,8 +51,6 @@ public class HoldPlaceCommand extends CommandBase {
   @Override
   public void initialize() {
     m_desiredAngleToHold = m_gyro.getHeading();
-    m_desiredPoseToHold = m_driveTrain.getPose();
-
     m_pidController.setSetpoint(m_desiredAngleToHold);
   }
 
@@ -66,28 +62,13 @@ public class HoldPlaceCommand extends CommandBase {
     double pidOutputClamped = MathUtil.clamp(pidOutput, -1, 1);
     double speedToTurnToCorrect = 0;
     
-    if (!m_ramseteController.atReference()) {
 
-      SmartDashboard.putNumber("Hold X", m_desiredPoseToHold.getTranslation().getX());
-      SmartDashboard.putNumber("Hold Y", m_desiredPoseToHold.getTranslation().getY());
-
-      SmartDashboard.putNumber("Current X", m_driveTrain.getPose().getTranslation().getX());
-      SmartDashboard.putNumber("Current Y", m_driveTrain.getPose().getTranslation().getY());
-
-      ChassisSpeeds speeds = m_ramseteController.calculate(m_driveTrain.getPose(), m_desiredPoseToHold, DriveConstants.kMaxSpeed * 0.5, DriveConstants.kMaxAngularSpeed * 0.5);
-      m_driveTrain.directDrive(speeds);
+    if (Math.abs(pidOutputClamped) > 0.02) {
+      speedToTurnToCorrect = pidOutputClamped * DriveConstants.kMaxAngularSpeed;
+      m_driveTrain.arcadeDrive(0, speedToTurnToCorrect); 
+    } else {
+      m_driveTrain.arcadeDrive(0, 0);
     }
-    // if (Math.abs(pidOutputClamped) > 0.02) {
-    //   speedToTurnToCorrect = pidOutputClamped * DriveConstants.kMaxAngularSpeed;
-    //   m_driveTrain.arcadeDrive(0, speedToTurnToCorrect); 
-    // } else {
-    //   m_driveTrain.arcadeDrive(0, 0);
-    // }
-
-    // SmartDashboard.putNumber("Hold SetPoint", m_pidController.getSetpoint());
-    // SmartDashboard.putNumber("Current Angle", currentHeading);
-    // SmartDashboard.putNumber("PID Output", pidOutputClamped);
-    // SmartDashboard.putNumber("Turn rate to correct (in radians)", speedToTurnToCorrect);
   }
 
 
