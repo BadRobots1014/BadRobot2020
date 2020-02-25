@@ -13,6 +13,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 public class HoodCommand extends CommandBase {
   private ShooterSubsystem m_shootSubsystem;
+  private boolean m_isFinished = false;
   /**
    * Creates a new HoodCommand.
    */
@@ -29,10 +30,9 @@ public class HoodCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    m_shootSubsystem.extendServo(); 
-    m_shootSubsystem.retractServo();    
-
+  public void execute(){
+    m_shootSubsystem.extendServo();
+    m_isFinished = true;
   }
 
   // Called once the command ends or is interrupted.
@@ -43,7 +43,14 @@ public class HoodCommand extends CommandBase {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
-    return m_shootSubsystem.getPosition() == 0;
+  public boolean isFinished()
+  {
+    if(m_isFinished){
+      m_isFinished = false;
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 }
