@@ -40,9 +40,11 @@ import frc.robot.commands.AutoLeftCommand;
 import frc.robot.commands.AutoLeftCornerCommand;
 import frc.robot.commands.AutoMiddleCommand;
 import frc.robot.commands.AutoRightCommand;
+import frc.robot.commands.ExtendShooterHoodCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.HoldPlaceCommand;
 import frc.robot.commands.RainbowLedCommand;
+import frc.robot.commands.RunMagazineMotorCommand;
 import frc.robot.commands.RunShooterCommand;
 import frc.robot.commands.SingleFireCommandGroup;
 import frc.robot.commands.TeleopDriveCommand;
@@ -204,6 +206,9 @@ public class RobotContainer {
 
     new JoystickButton(m_attachmentsController, Button.kY.value)
     .whenHeld(m_shootCommand);
+
+    new JoystickButton(m_attachmentsController, Button.kX.value)
+    .whenHeld(new RunMagazineMotorCommand(m_magSubsystem)); 
     
     new JoystickButton(m_attachmentsController, Button.kA.value)
     .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
@@ -220,7 +225,10 @@ public class RobotContainer {
     .whenPressed(() -> m_gathererSubsystem.gathererOut(true))
     .whenReleased(() -> m_gathererSubsystem.gathererOut(false));
 
-
+    /*
+    new JoystickButton(m_attachmentsController, Button.kX.value)
+    .whenPressed(new ExtendShooterHoodCommand(m_shooterSubsystem));
+    */
   }
 
   private void configureDiagnosticControls() {
