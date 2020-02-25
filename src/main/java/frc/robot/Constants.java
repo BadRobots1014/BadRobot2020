@@ -74,7 +74,7 @@ public final class Constants {
         public static final int kShooterId = 20;
         public static final boolean kShooterReversed = true;
 
-        public static final int kServoPort = 0;
+        public static final int  kServoActuatorId = 0;
 
         public static final double kMaxPercentOutput = 0.65;
         public static final double kF = 0.1968269231;

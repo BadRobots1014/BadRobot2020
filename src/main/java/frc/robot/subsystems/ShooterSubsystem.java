@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import edu.wpi.first.wpilibj.Servo;
+
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX m_shooterMotor = new TalonFX(ShooterConstants.kShooterId);
@@ -36,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooterMotor.config_kP(0, ShooterConstants.kP);
   }
 
-  public void runShooter() {
+  public void setMaxSpeed() {
     m_shooterMotor.set(TalonFXControlMode.Velocity, ShooterConstants.kDesiredAngularSpeed);
   }
 

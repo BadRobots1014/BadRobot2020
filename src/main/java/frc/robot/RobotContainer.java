@@ -49,7 +49,11 @@ import frc.robot.commands.RunShooterCommand;
 import frc.robot.commands.SingleFireCommandGroup;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
+<<<<<<< HEAD
+import frc.robot.commands.HoodCommand;
+=======
 import frc.robot.subsystems.ClimberSubsystem;
+>>>>>>> 91beab400504908057bd9c965b9f8c9424ae44bc
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
@@ -211,7 +215,14 @@ public class RobotContainer {
     .whenHeld(new RunMagazineMotorCommand(m_magSubsystem)); 
     
     new JoystickButton(m_attachmentsController, Button.kA.value)
+<<<<<<< HEAD
+    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem));
+
+    new JoystickButton(m_attachmentsController, Button.kX.value)
+    .whenHeld(new HoodCommand(m_shooterSubsystem));
+=======
     .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
+>>>>>>> 91beab400504908057bd9c965b9f8c9424ae44bc
     
     new JoystickButton(m_attachmentsController, Button.kB.value)
     .whenPressed(() -> m_climberSubsystem.setSingleSolenoid(true))
