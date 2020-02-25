@@ -8,18 +8,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.GathererSubsystem;
 
-public class RunShooterCommand extends CommandBase {
-  private ShooterSubsystem m_shooter;
+public class RunGathererReversedCommand extends CommandBase {
+  private final GathererSubsystem m_gathererSubsystem;
   /**
-   * Creates a new ShootCommand.
+   * Creates a new RunGathererReversedCommand.
    */
-  public RunShooterCommand(ShooterSubsystem subsystem) {
-    m_shooter = subsystem;
+  public RunGathererReversedCommand(GathererSubsystem gathererSubsystem) {
+    m_gathererSubsystem = gathererSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-
-    addRequirements(subsystem);
+    addRequirements(gathererSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -30,18 +29,18 @@ public class RunShooterCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      m_shooter.runShooter();
+    m_gathererSubsystem.runGathererReversed();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.stopShooter();
+    m_gathererSubsystem.stopGather();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

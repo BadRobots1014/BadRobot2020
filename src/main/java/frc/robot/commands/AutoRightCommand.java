@@ -35,7 +35,7 @@ public class AutoRightCommand extends SequentialCommandGroup {
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/RedRightStart.wpilib.json", driveTrain)
                 .beforeStarting(() -> driveTrain.setPose(new Pose2d(2.995, -5.855, new Rotation2d(0))))
                 .andThen(() -> driveTrain.stop()),
-                new SingleFireCommandGroup(shooter, magazine)
+                new SingleFireCommandGroup(shooter, magazine, gatherer)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedToLeft.wpilib.json", driveTrain)
                 .andThen(() -> driveTrain.stop()),

@@ -35,13 +35,13 @@ public class AutoMiddleCommand extends SequentialCommandGroup {
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/RedMiddleStart.wpilib.json", driveTrain)
                 .beforeStarting(() -> driveTrain.setPose(new Pose2d(3.043, -3.916, new Rotation2d(0))))
                 .andThen(() -> driveTrain.stop()),
-                new SingleFireCommandGroup(shooter, magazine)
+                new SingleFireCommandGroup(shooter, magazine, gatherer)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedMiddleCollect.wpilib.json", driveTrain)
                 .raceWith(new GatherCommand(gatherer))
                 .andThen(() -> driveTrain.stop())
                 .andThen(() -> gatherer.stopGather()),
-                new SingleFireCommandGroup(shooter, magazine)
+                new SingleFireCommandGroup(shooter, magazine, gatherer)
                 .andThen(() -> driveTrain.stop())
     );
   }

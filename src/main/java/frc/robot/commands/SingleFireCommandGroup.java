@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -22,7 +23,7 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
   /**
    * Creates a new SingleFireCommandGroup.
    */
-  public SingleFireCommandGroup(ShooterSubsystem shooterSubsystem, MagazineSubsystem magSubsystem) {
+  public SingleFireCommandGroup(ShooterSubsystem shooterSubsystem, MagazineSubsystem magSubsystem, GathererSubsystem gathererSubsystem) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(
@@ -38,6 +39,7 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
         }),
         new ParallelRaceGroup(
           new RunMagazineMotorCommand(magSubsystem),
+          new RunGathererReversedCommand(gathererSubsystem),
           new WaitUntilCommand(() -> {
             if (shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta // should be negative
             //&& m_shooterSubsystem.getDeltaDesiredActiveCurrent() >= ShooterConstants.kShootThresholdActiveCurrentDelta

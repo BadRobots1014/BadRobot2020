@@ -190,7 +190,7 @@ public class RobotContainer {
     .whenHeld(m_shootCommand);
     
     new JoystickButton(m_driverController, Button.kA.value)
-    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem));
+    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
   }
 
   private void configureAttachmentControls()
@@ -203,7 +203,7 @@ public class RobotContainer {
     .whenHeld(m_shootCommand);
     
     new JoystickButton(m_attachmentsController, Button.kA.value)
-    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem));
+    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
     
   }
 
