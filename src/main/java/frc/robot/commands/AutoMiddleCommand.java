@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrainSubsystem;
-import frc.robot.subsystems.FeedSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -29,19 +29,19 @@ public class AutoMiddleCommand extends SequentialCommandGroup {
     LEDSubsystem m_lights;
 
     public AutoMiddleCommand(DriveTrainSubsystem driveTrain, ShooterSubsystem shooter, 
-    GathererSubsystem gatherer, FeedSubsystem feeder) {
+    GathererSubsystem gatherer, MagazineSubsystem magazine) {
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
     addCommands(RamseteUtil.getRamseteCommandForPath("paths/RedMiddleStart.wpilib.json", driveTrain)
                 .beforeStarting(() -> driveTrain.setPose(new Pose2d(3.043, -3.916, new Rotation2d(0))))
                 .andThen(() -> driveTrain.stop()),
-                new SingleFireCommandGroup(shooter, feeder)
+                new SingleFireCommandGroup(shooter, magazine, gatherer)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedMiddleCollect.wpilib.json", driveTrain)
                 .raceWith(new GatherCommand(gatherer))
                 .andThen(() -> driveTrain.stop())
                 .andThen(() -> gatherer.stopGather()),
-                new SingleFireCommandGroup(shooter, feeder)
+                new SingleFireCommandGroup(shooter, magazine, gatherer)
                 .andThen(() -> driveTrain.stop())
     );
   }

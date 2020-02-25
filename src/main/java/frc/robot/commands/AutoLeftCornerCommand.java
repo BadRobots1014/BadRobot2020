@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrainSubsystem;
-import frc.robot.subsystems.FeedSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -30,13 +30,13 @@ public class AutoLeftCornerCommand extends SequentialCommandGroup {
     LEDSubsystem m_lights;
 
     public AutoLeftCornerCommand(DriveTrainSubsystem driveTrain, ShooterSubsystem shooter, 
-    GathererSubsystem gatherer, FeedSubsystem feeder, GyroProvider gyro) {
+    GathererSubsystem gatherer, MagazineSubsystem magazine, GyroProvider gyro) {
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
     addCommands(new TurnCommand(driveTrain, gyro, -135)
                 .andThen(() -> driveTrain.stop()),
-                new SingleFireCommandGroup(shooter, feeder)
-                .andThen(() -> shooter.setZeroSpeed()),
+                new SingleFireCommandGroup(shooter, magazine, gatherer)
+                .andThen(() -> shooter.stopShooter()),
                 new TurnCommand(driveTrain, gyro, 135)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedLeftCollect.wpilib.json", driveTrain)
@@ -46,7 +46,7 @@ public class AutoLeftCornerCommand extends SequentialCommandGroup {
                 .andThen(() -> gatherer.stopGather()),
                 RamseteUtil.getRamseteCommandForPath("paths/RedLeftReturn.wpilib.json", driveTrain)
                 .andThen(() -> driveTrain.stop()),
-                new SingleFireCommandGroup(shooter, feeder)
+                new SingleFireCommandGroup(shooter, magazine, gatherer)
                 .andThen(() -> driveTrain.stop())
     );
   }

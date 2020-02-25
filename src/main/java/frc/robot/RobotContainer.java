@@ -40,7 +40,6 @@ import frc.robot.commands.AutoLeftCommand;
 import frc.robot.commands.AutoLeftCornerCommand;
 import frc.robot.commands.AutoMiddleCommand;
 import frc.robot.commands.AutoRightCommand;
-import frc.robot.commands.FeedCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.HoldPlaceCommand;
 import frc.robot.commands.RainbowLedCommand;
@@ -50,9 +49,9 @@ import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
-import frc.robot.subsystems.FeedSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.GyroProvider;
 import frc.robot.util.SparkMaxProvider;
@@ -67,13 +66,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveTrainSubsystem m_driveTrain;  
   private final GathererSubsystem m_gathererSubsystem;
-  private final FeedSubsystem m_feedSubsystem;
+  private final MagazineSubsystem m_magSubsystem;
   private final ShooterSubsystem m_shooterSubsystem;
   private final ClimberSubsystem m_climberSubsystem;
 
   private final TeleopDriveCommand m_teleopDriveCommand;
   private final GatherCommand m_gatherCommand;
-  private final FeedCommand m_feedCommand;
   private final RunShooterCommand m_shootCommand;
 
   private final XboxController m_driverController = new XboxController(OIConstants.kDriverController);
@@ -113,13 +111,12 @@ public class RobotContainer {
     m_driveTrain = new DriveTrainSubsystem(m_speedControllerProvider, m_gyroProvider);
     m_LEDSubsystem = new LEDSubsystem(m_LED, m_LEDBuffer);
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(AccessoryConstants.kGathererPort));
-    m_feedSubsystem = new FeedSubsystem(new TalonSRX(AccessoryConstants.kFeedPort));
     m_shooterSubsystem = new ShooterSubsystem();
     m_climberSubsystem = new ClimberSubsystem();
+    m_magSubsystem = new MagazineSubsystem();
 
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
-    m_feedCommand = new FeedCommand(m_feedSubsystem);
     m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
     m_AutoAimCommand = new AimCommand(m_driveTrain, m_gyroProvider, Robot::getCenterX);
     m_shootCommand = new RunShooterCommand(m_shooterSubsystem);
@@ -132,10 +129,10 @@ public class RobotContainer {
     
 
     m_exampleDrive = new AutoDriveExamplePathCommandGroup(m_driveTrain);
-    m_autoLeftCorner = new AutoLeftCornerCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem, m_gyroProvider);
-    m_autoLeft = new AutoLeftCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
-    m_autoMiddle = new AutoMiddleCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
-    m_autoRight = new AutoRightCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_feedSubsystem);
+    m_autoLeftCorner = new AutoLeftCornerCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem, m_gyroProvider);
+    m_autoLeft = new AutoLeftCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
+    m_autoMiddle = new AutoMiddleCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
+    m_autoRight = new AutoRightCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
     // Configure SmartDashboard Tabs
     configureAutonomousTab();
 
@@ -192,14 +189,11 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kBack.value)
     .toggleWhenPressed(m_gatherCommand);
 
-    new JoystickButton(m_driverController, Button.kStart.value)
-    .toggleWhenPressed(m_feedCommand);
-
     new JoystickButton(m_driverController, Button.kY.value)
     .whenHeld(m_shootCommand);
     
     new JoystickButton(m_driverController, Button.kA.value)
-    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_feedSubsystem));
+    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
   }
 
   private void configureAttachmentControls()
@@ -208,14 +202,11 @@ public class RobotContainer {
     new JoystickButton(m_attachmentsController, Button.kBack.value)
     .toggleWhenPressed(m_gatherCommand);
 
-    new JoystickButton(m_attachmentsController, Button.kStart.value)
-    .toggleWhenPressed(m_feedCommand);
-
     new JoystickButton(m_attachmentsController, Button.kY.value)
     .whenHeld(m_shootCommand);
     
     new JoystickButton(m_attachmentsController, Button.kA.value)
-    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_feedSubsystem));
+    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
     
     new JoystickButton(m_attachmentsController, Button.kB.value)
     .whenPressed(() -> m_climberSubsystem.setSingleSolenoid(true))

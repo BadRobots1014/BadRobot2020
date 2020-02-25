@@ -33,11 +33,11 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooterMotor.config_kP(0, ShooterConstants.kP);
   }
 
-  public void setMaxSpeed() {
+  public void runShooter() {
     m_shooterMotor.set(TalonFXControlMode.Velocity, ShooterConstants.kDesiredAngularSpeed);
   }
 
-  public void setZeroSpeed() {
+  public void stopShooter() {
     m_shooterMotor.set(TalonFXControlMode.PercentOutput, 0);
   }
 

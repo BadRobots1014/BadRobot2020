@@ -119,8 +119,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
   }
 
   public void stop() {
-    m_leftMaster.setVoltage(0);
-    m_rightMaster.setVoltage(0);
+    m_leftMaster.set(0);
+    m_rightMaster.set(0);
   }
 
   public double getLeftEncoderPosition() {
