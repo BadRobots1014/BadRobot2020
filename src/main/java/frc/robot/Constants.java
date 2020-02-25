@@ -72,7 +72,7 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public static final int kShooterId = 20;
-        public static final boolean kShooterReversed = true;
+        public static final boolean kShooterReversed = false;
 
         public static final int  kServoActuatorId = 0;
 

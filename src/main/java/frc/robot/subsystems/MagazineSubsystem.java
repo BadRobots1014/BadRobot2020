@@ -33,6 +33,7 @@ public class MagazineSubsystem extends SubsystemBase {
    */
   public MagazineSubsystem(TalonSRX magMotor) {
     m_magazineMotor = magMotor;
+    m_magazineMotor.setInverted(true);
   }
 
   public void runMotor() {
