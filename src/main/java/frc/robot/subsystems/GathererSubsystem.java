@@ -9,9 +9,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class GathererSubsystem extends SubsystemBase {
+  private final DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(1, 2);
   public static final double kGathererSpeed = .5;
 
   private final TalonSRX m_gatherer;
@@ -24,9 +28,31 @@ public class GathererSubsystem extends SubsystemBase {
     m_gatherer.setInverted(false);
   }
 
+  public void gathererOut(boolean climb) {
+    if (climb) {
+      m_doubleSolenoid.set(Value.kForward);
+    } else {
+      m_doubleSolenoid.set(Value.kOff);
+    }
+  }
+
+  public void gathererIn(boolean climb) {
+    if (climb) {
+      m_doubleSolenoid.set(Value.kReverse);
+    } else {
+      m_doubleSolenoid.set(Value.kOff);
+    }
+  }
+
+
   public void setGatherSpeed() {
     m_gatherer.set(ControlMode.PercentOutput, kGathererSpeed);
   }
+
+  public void runGathererReversed() {
+    m_gatherer.set(ControlMode.PercentOutput, -kGathererSpeed);
+  }
+
   public void stopGather() {
     m_gatherer.set(ControlMode.PercentOutput, 0);
   }

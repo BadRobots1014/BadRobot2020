@@ -35,8 +35,8 @@ public class AutoLeftCornerCommand extends SequentialCommandGroup {
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
     addCommands(new TurnCommand(driveTrain, gyro, -135)
                 .andThen(() -> driveTrain.stop()),
-                new SingleFireCommandGroup(shooter, magazine)
-                .andThen(() -> shooter.setZeroSpeed()),
+                new SingleFireCommandGroup(shooter, magazine, gatherer)
+                .andThen(() -> shooter.stopShooter()),
                 new TurnCommand(driveTrain, gyro, 135)
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedLeftCollect.wpilib.json", driveTrain)
@@ -46,7 +46,7 @@ public class AutoLeftCornerCommand extends SequentialCommandGroup {
                 .andThen(() -> gatherer.stopGather()),
                 RamseteUtil.getRamseteCommandForPath("paths/RedLeftReturn.wpilib.json", driveTrain)
                 .andThen(() -> driveTrain.stop()),
-                new SingleFireCommandGroup(shooter, magazine)
+                new SingleFireCommandGroup(shooter, magazine, gatherer)
                 .andThen(() -> driveTrain.stop())
     );
   }

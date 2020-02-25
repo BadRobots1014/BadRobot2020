@@ -7,14 +7,31 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+//import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+//import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+//import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase {
+  //private final Solenoid m_solenoid = new Solenoid(0);
+  private final Solenoid m_solenoid = new Solenoid(0);
   /**
-   * Creates a new ExampleSubsystem.
+   * Creates a new Climber.
    */
   public ClimberSubsystem() {
 
   }
 
+  public void setSingleSolenoid(boolean climb) {
+    m_solenoid.set(climb);
+  }
+  
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
 }

@@ -47,7 +47,11 @@ import frc.robot.commands.RunShooterCommand;
 import frc.robot.commands.SingleFireCommandGroup;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
+<<<<<<< HEAD
 import frc.robot.commands.HoodCommand;
+=======
+import frc.robot.subsystems.ClimberSubsystem;
+>>>>>>> 91beab400504908057bd9c965b9f8c9424ae44bc
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
@@ -68,6 +72,7 @@ public class RobotContainer {
   private final GathererSubsystem m_gathererSubsystem;
   private final MagazineSubsystem m_magSubsystem;
   private final ShooterSubsystem m_shooterSubsystem;
+  private final ClimberSubsystem m_climberSubsystem;
 
   private final TeleopDriveCommand m_teleopDriveCommand;
   private final GatherCommand m_gatherCommand;
@@ -111,6 +116,7 @@ public class RobotContainer {
     m_LEDSubsystem = new LEDSubsystem(m_LED, m_LEDBuffer);
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(AccessoryConstants.kGathererPort));
     m_shooterSubsystem = new ShooterSubsystem();
+    m_climberSubsystem = new ClimberSubsystem();
     m_magSubsystem = new MagazineSubsystem();
 
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
@@ -191,7 +197,7 @@ public class RobotContainer {
     .whenHeld(m_shootCommand);
     
     new JoystickButton(m_driverController, Button.kA.value)
-    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem));
+    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
   }
 
   private void configureAttachmentControls()
@@ -204,11 +210,28 @@ public class RobotContainer {
     .whenHeld(m_shootCommand);
     
     new JoystickButton(m_attachmentsController, Button.kA.value)
+<<<<<<< HEAD
     .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem));
 
     new JoystickButton(m_attachmentsController, Button.kX.value)
     .whenHeld(new HoodCommand(m_shooterSubsystem));
+=======
+    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
+>>>>>>> 91beab400504908057bd9c965b9f8c9424ae44bc
     
+    new JoystickButton(m_attachmentsController, Button.kB.value)
+    .whenPressed(() -> m_climberSubsystem.setSingleSolenoid(true))
+    .whenReleased(() -> m_climberSubsystem.setSingleSolenoid(false));
+
+    new JoystickButton(m_attachmentsController, Button.kBumperLeft.value)
+    .whenPressed(() -> m_gathererSubsystem.gathererIn(true))
+    .whenReleased(() -> m_gathererSubsystem.gathererIn(false));
+
+    new JoystickButton(m_attachmentsController, Button.kBumperRight.value)
+    .whenPressed(() -> m_gathererSubsystem.gathererOut(true))
+    .whenReleased(() -> m_gathererSubsystem.gathererOut(false));
+
+
   }
 
   private void configureDiagnosticControls() {
