@@ -7,6 +7,10 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 //import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -14,21 +18,32 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 //import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 //import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
   //private final Solenoid m_solenoid = new Solenoid(0);
   private final Solenoid m_solenoid = new Solenoid(2);
+  private final CANSparkMax m_winch = new CANSparkMax(ClimberConstants.kWinchMotor, MotorType.kBrushless);
   /**
    * Creates a new Climber.
    */
   public ClimberSubsystem() {
-
+    m_winch.setInverted(false);
+    m_winch.setIdleMode(IdleMode.kBrake);
+    m_winch.setSmartCurrentLimit(ClimberConstants.kCurrentLimit);
   }
 
   public void setSingleSolenoid(boolean climb) {
     m_solenoid.set(climb);
   }
+
+  public void stop() {
+    m_winch.set(0);
+  }
   
+  public void runWinch(){
+    m_winch.set(ClimberConstants.kWinchSpeed);
+  }
 
   @Override
   public void periodic() {

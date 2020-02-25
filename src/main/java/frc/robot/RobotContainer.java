@@ -40,6 +40,7 @@ import frc.robot.commands.AutoLeftCommand;
 import frc.robot.commands.AutoLeftCornerCommand;
 import frc.robot.commands.AutoMiddleCommand;
 import frc.robot.commands.AutoRightCommand;
+import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.ExtendShooterHoodCommand;
 import frc.robot.commands.GatherCommand;
 import frc.robot.commands.HoldPlaceCommand;
@@ -95,6 +96,7 @@ public class RobotContainer {
   private final RainbowLedCommand m_defaultLedCommand;
   private HoldPlaceCommand m_holdPlaceCommand;
   private AimCommand m_AutoAimCommand;
+  private ClimberCommand m_climbCommand;
 
   private final ShuffleboardTab m_autonomousShuffleboardTab = Shuffleboard.getTab("Autonomous");
   private SendableChooser<Command> m_autonomousChooser;
@@ -123,6 +125,7 @@ public class RobotContainer {
     m_holdPlaceCommand = new HoldPlaceCommand(m_driveTrain, m_gyroProvider);
     m_AutoAimCommand = new AimCommand(m_driveTrain, m_gyroProvider, Robot::getCenterX);
     m_shootCommand = new RunShooterCommand(m_shooterSubsystem);
+    m_climbCommand = new ClimberCommand(m_climberSubsystem);
 
     // Configure the button bindings
     m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem, m_driverController, m_attachmentsController);
@@ -222,6 +225,9 @@ public class RobotContainer {
     */
     
     new JoystickButton(m_attachmentsController, Button.kB.value)
+    .whenHeld(m_climbCommand);
+
+    new JoystickButton(m_attachmentsController, Button.kStart.value)
     .whenPressed(() -> m_climberSubsystem.setSingleSolenoid(true))
     .whenReleased(() -> m_climberSubsystem.setSingleSolenoid(false));
 

@@ -111,4 +111,10 @@ public final class Constants {
         public static final int kLEDPwmPort = 9;
         public static final int kLEDStrandLength = 150;
     }
+
+    public static final class ClimberConstants{
+        public static final int kWinchMotor = 7;
+        public static final int kCurrentLimit = 40;
+        public static final double kWinchSpeed = 0.5;
+    }
 }
