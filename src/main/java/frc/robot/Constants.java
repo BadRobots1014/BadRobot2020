@@ -29,7 +29,7 @@ public final class Constants {
 
     public static final class AccessoryConstants {
         public static final int kGathererPort = 14;
-        public static final int kFeedPort = 21;
+        public static final int kMagazineMotorId = 11;
     }
 
     public static final class DriveConstants {
@@ -93,7 +93,6 @@ public final class Constants {
     }
 
     public static final class MagazineConstants {
-        public static final int kMotorPort = 11; // PWM Speed Controller
         public static final int kInSensorPort = 0; // Analog input port
         public static final int kOutSensorPort = 1; // Analog input port
         public static final double kMaxSpeed = 0.5;

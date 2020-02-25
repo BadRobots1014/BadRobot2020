@@ -116,7 +116,7 @@ public class RobotContainer {
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(AccessoryConstants.kGathererPort));
     m_shooterSubsystem = new ShooterSubsystem();
     m_climberSubsystem = new ClimberSubsystem();
-    m_magSubsystem = new MagazineSubsystem(new TalonSRX(11));
+    m_magSubsystem = new MagazineSubsystem(new TalonSRX(AccessoryConstants.kMagazineMotorId));
 
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
@@ -205,17 +205,21 @@ public class RobotContainer {
     new JoystickButton(m_attachmentsController, Button.kBack.value)
     .toggleWhenPressed(m_gatherCommand);
 
+    // Testing Shooter Motor
     new JoystickButton(m_attachmentsController, Button.kY.value)
     .whenHeld(m_shootCommand);
 
+    // Testing Magazine Motor
     new JoystickButton(m_attachmentsController, Button.kX.value)
     .whenHeld(new RunMagazineMotorCommand(m_magSubsystem)); 
     
     new JoystickButton(m_attachmentsController, Button.kA.value)
     .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
 
+    /*
     new JoystickButton(m_attachmentsController, Button.kX.value)
     .whenHeld(new HoodCommand(m_shooterSubsystem));
+    */
     
     new JoystickButton(m_attachmentsController, Button.kB.value)
     .whenPressed(() -> m_climberSubsystem.setSingleSolenoid(true))

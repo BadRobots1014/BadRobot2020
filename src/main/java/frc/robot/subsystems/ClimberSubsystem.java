@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase {
   //private final Solenoid m_solenoid = new Solenoid(0);
-  private final Solenoid m_solenoid = new Solenoid(0);
+  private final Solenoid m_solenoid = new Solenoid(2);
   /**
    * Creates a new Climber.
    */

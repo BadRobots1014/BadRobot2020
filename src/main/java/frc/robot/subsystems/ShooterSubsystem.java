@@ -47,7 +47,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void runShooter() {
-    m_shooterMotor.set(TalonFXControlMode.Velocity, ShooterConstants.kDesiredAngularSpeed);
+    m_shooterMotor.set(TalonFXControlMode.PercentOutput, 0.4);
   }
 
   public void stopShooter() {

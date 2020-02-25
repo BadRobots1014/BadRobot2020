@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class GathererSubsystem extends SubsystemBase {
-  private final DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(1, 2);
+  private final DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(0, 1);
   public static final double kGathererSpeed = .5;
 
   private final TalonSRX m_gatherer;
