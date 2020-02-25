@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import edu.wpi.first.wpilibj.Servo;
+
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX m_shooterMotor = new TalonFX(ShooterConstants.kShooterId);
@@ -23,6 +25,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final NetworkTableEntry m_velocityEntry = m_shooterTab.add("Shooter Velocity", 0).getEntry();
   private final NetworkTableEntry m_currentEntry = m_shooterTab.add("Shooter Current", 0).getEntry();
   private final NetworkTableEntry m_deltaVelocityEntry = m_shooterTab.add("Delta Velocity", 0).getEntry();
+  
+  private final Servo m_servoDawg = new Servo(ShooterConstants.kServoActuatorId);
   /**
    * Creates a new ExampleSubsystem.
    */
@@ -31,6 +35,14 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooterMotor.setInverted(ShooterConstants.kShooterReversed);
     m_shooterMotor.config_kF(0, ShooterConstants.kF);
     m_shooterMotor.config_kP(0, ShooterConstants.kP);
+  }
+
+  public void extendServo() {
+    m_servoDawg.set(1.0);
+  }
+
+  public void retractServo() {
+    m_servoDawg.set(0.0);
   }
 
   public void setMaxSpeed() {
