@@ -37,24 +37,24 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooterMotor.config_kP(0, ShooterConstants.kP);
   }
 
-<<<<<<< HEAD
   public void extendServo() {
-    m_servoDawg.set(1.0);
+    m_servoDawg.setAngle(67);
   }
 
   public void retractServo() {
-    m_servoDawg.set(0.0);
+    m_servoDawg.setAngle(0);
   }
 
-  public void setMaxSpeed() {
-=======
   public void runShooter() {
->>>>>>> 91beab400504908057bd9c965b9f8c9424ae44bc
     m_shooterMotor.set(TalonFXControlMode.Velocity, ShooterConstants.kDesiredAngularSpeed);
   }
 
   public void stopShooter() {
     m_shooterMotor.set(TalonFXControlMode.PercentOutput, 0);
+  }
+
+  public double getPosition(){
+    return m_servoDawg.getPosition();
   }
 
   public void updateEntries() {
