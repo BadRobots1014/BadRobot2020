@@ -48,6 +48,7 @@ import frc.robot.commands.RunShooterCommand;
 import frc.robot.commands.SingleFireCommandGroup;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.FeedSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
@@ -68,6 +69,7 @@ public class RobotContainer {
   private final GathererSubsystem m_gathererSubsystem;
   private final FeedSubsystem m_feedSubsystem;
   private final ShooterSubsystem m_shooterSubsystem;
+  private final ClimberSubsystem m_climberSubsystem;
 
   private final TeleopDriveCommand m_teleopDriveCommand;
   private final GatherCommand m_gatherCommand;
@@ -113,6 +115,7 @@ public class RobotContainer {
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(AccessoryConstants.kGathererPort));
     m_feedSubsystem = new FeedSubsystem(new TalonSRX(AccessoryConstants.kFeedPort));
     m_shooterSubsystem = new ShooterSubsystem();
+    m_climberSubsystem = new ClimberSubsystem();
 
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);
@@ -214,6 +217,19 @@ public class RobotContainer {
     new JoystickButton(m_attachmentsController, Button.kA.value)
     .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_feedSubsystem));
     
+    new JoystickButton(m_attachmentsController, Button.kB.value)
+    .whenPressed(() -> m_climberSubsystem.setSingleSolenoid(true))
+    .whenReleased(() -> m_climberSubsystem.setSingleSolenoid(false));
+
+    new JoystickButton(m_attachmentsController, Button.kBumperLeft.value)
+    .whenPressed(() -> m_gathererSubsystem.gathererIn(true))
+    .whenReleased(() -> m_gathererSubsystem.gathererIn(false));
+
+    new JoystickButton(m_attachmentsController, Button.kBumperRight.value)
+    .whenPressed(() -> m_gathererSubsystem.gathererOut(true))
+    .whenReleased(() -> m_gathererSubsystem.gathererOut(false));
+
+
   }
 
   private void configureDiagnosticControls() {
