@@ -25,7 +25,7 @@ public class GathererSubsystem extends SubsystemBase {
    */
   public GathererSubsystem(TalonSRX talon) {
     m_gatherer = talon;
-    m_gatherer.setInverted(false);
+    m_gatherer.setInverted(true);
   }
 
   public void gathererOut(boolean climb) {
@@ -44,8 +44,7 @@ public class GathererSubsystem extends SubsystemBase {
     }
   }
 
-
-  public void setGatherSpeed() {
+  public void runGatherer() {
     m_gatherer.set(ControlMode.PercentOutput, kGathererSpeed);
   }
 
