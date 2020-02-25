@@ -47,6 +47,7 @@ import frc.robot.commands.RunShooterCommand;
 import frc.robot.commands.SingleFireCommandGroup;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
+import frc.robot.commands.HoodCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
@@ -204,6 +205,9 @@ public class RobotContainer {
     
     new JoystickButton(m_attachmentsController, Button.kA.value)
     .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem));
+
+    new JoystickButton(m_attachmentsController, Button.kX.value)
+    .whenHeld(new HoodCommand(m_shooterSubsystem));
     
   }
 
