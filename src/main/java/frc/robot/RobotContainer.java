@@ -115,7 +115,7 @@ public class RobotContainer {
     m_gathererSubsystem = new GathererSubsystem(new TalonSRX(AccessoryConstants.kGathererPort));
     m_shooterSubsystem = new ShooterSubsystem();
     m_climberSubsystem = new ClimberSubsystem();
-    m_magSubsystem = new MagazineSubsystem();
+    m_magSubsystem = new MagazineSubsystem(new TalonSRX(11));
 
     m_teleopDriveCommand = new TeleopDriveCommand(m_driveTrain);
     m_gatherCommand = new GatherCommand(m_gathererSubsystem);

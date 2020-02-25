@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MagazineConstants;
 
 public class MagazineSubsystem extends SubsystemBase {
-  private final TalonSRX m_magazineMotor = new TalonSRX(MagazineConstants.kMotorPort);
+  private final TalonSRX m_magazineMotor;
   private final AnalogInput m_inSensor = new AnalogInput(MagazineConstants.kInSensorPort);
   private final AnalogInput m_outSensor = new AnalogInput(MagazineConstants.kOutSensorPort);
   
@@ -31,8 +31,8 @@ public class MagazineSubsystem extends SubsystemBase {
   /**
    * Creates a new MagazineSubsystem.
    */
-  public MagazineSubsystem() {
-
+  public MagazineSubsystem(TalonSRX magMotor) {
+    m_magazineMotor = magMotor;
   }
 
   public void runMotor() {
