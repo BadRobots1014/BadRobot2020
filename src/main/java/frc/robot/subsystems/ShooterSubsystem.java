@@ -33,6 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public ShooterSubsystem() {
     m_shooterMotor.setNeutralMode(NeutralMode.Coast);
+    m_shooterMotor.configClosedloopRamp(4);
     m_shooterMotor.setInverted(ShooterConstants.kShooterReversed);
     m_shooterMotor.config_kF(0, ShooterConstants.kF);
     m_shooterMotor.config_kP(0, ShooterConstants.kP);
@@ -47,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void runShooter() {
-    m_shooterMotor.set(TalonFXControlMode.PercentOutput, 0.4);
+    m_shooterMotor.set(TalonFXControlMode.Velocity, ShooterConstants.kDesiredAngularSpeed);
   }
 
   public void stopShooter() {

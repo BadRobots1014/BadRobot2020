@@ -48,13 +48,13 @@ public final class Constants {
         public static final double kMaxAngularSpeed = 2 * Math.PI; // one rotation per second
         public static final double kGathererSpeed = .5;
       
-        public static final double kTrackWidth = 0.608539858; // meters
+        public static final double kTrackWidth = 0.6597507168526806; // meters
         public static final double kWheelDiameter = 0.2032; // meters
         public static final double kDriveGearing = 10.75;
         
-        public static final double ksVolts = 0.211;
+        public static final double ksVolts = 0.22;
         public static final double kvVoltSecondsPerMeter = 2.15;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.482;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.544;
 
         public static final double kLeftP = 14.5;
         public static final double kRightP = 14.5;
