@@ -215,17 +215,21 @@ public class RobotContainer {
   {
     // Unjam Gatherer
     new JoystickButton(m_attachmentsController, Button.kB.value)
-    .whileHeld(() -> m_gathererSubsystem.runGatherer());
+    .whenPressed(() -> m_gathererSubsystem.runGatherer())
+    .whenReleased(() -> m_gathererSubsystem.stopGather());
 
     new JoystickButton(m_attachmentsController, Button.kA.value)
-    .whileHeld(() -> m_gathererSubsystem.runGathererReversed());
+    .whenPressed(() -> m_gathererSubsystem.runGathererReversed())
+    .whenReleased(() -> m_gathererSubsystem.stopGather());
 
     // Unjam Magazine
     new JoystickButton(m_attachmentsController, Button.kY.value)
-    .whileHeld(() -> m_magSubsystem.runMotor());
+    .whenPressed(() -> m_magSubsystem.runMotor())
+    .whenReleased(() -> m_magSubsystem.stopMotor());
 
     new JoystickButton(m_attachmentsController, Button.kX.value)
-    .whileHeld(() -> m_magSubsystem.runMotorReversed()); 
+    .whenPressed(() -> m_magSubsystem.runMotorReversed())
+    .whenReleased(() -> m_magSubsystem.stopMotor());
 
     // Unjam Shooter
     DoubleSupplier leftYJoystick = () -> m_attachmentsController.getY(Hand.kLeft);

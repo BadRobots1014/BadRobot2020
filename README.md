@@ -1,6 +1,6 @@
 # BadRobot2020
 
-## Controls (Updated 2/27/2020 @ 9:45AM)
+## Controls (Updated 2/27/2020 @ 10:15AM)
 
 ### Driver Controls
 
@@ -11,7 +11,8 @@ LT/Left Trigger (Hold) - Enables QuickTurn
 LB/Left Bumper (Hold) - Shoot
 RB/Right Bumper (Press) - Toggle Gatherer In/Out
 
-Back (Hold) - Climb
+Start (Press) - Fire pneumatic for climbing
+Back (Hold) - Climbing winch
 
 Unjamming:
 
