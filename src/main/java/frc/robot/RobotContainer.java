@@ -243,8 +243,8 @@ public class RobotContainer {
     .whenHeld(m_climbCommand);
 
     new JoystickButton(m_attachmentsController, Button.kStart.value)
-    .whenPressed(() -> m_climberSubsystem.setSingleSolenoid(true))
-    .whenReleased(() -> m_climberSubsystem.setSingleSolenoid(false));
+    .whenPressed(() -> m_climberSubsystem.climberUp(true))
+    .whenReleased(() -> m_climberSubsystem.climberUp(false));
 
     /* If you want to use these then change the buttons
     new JoystickButton(m_attachmentsController, Button.kBumperLeft.value)

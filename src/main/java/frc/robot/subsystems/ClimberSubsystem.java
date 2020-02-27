@@ -22,7 +22,7 @@ import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
   //private final Solenoid m_solenoid = new Solenoid(0);
-  private final Solenoid m_solenoid = new Solenoid(2);
+  private final DoubleSolenoid m_solenoid = new DoubleSolenoid(2,3);
   private final CANSparkMax m_winch = new CANSparkMax(ClimberConstants.kWinchMotor, MotorType.kBrushless);
   /**
    * Creates a new Climber.
@@ -33,8 +33,13 @@ public class ClimberSubsystem extends SubsystemBase {
     m_winch.setSmartCurrentLimit(ClimberConstants.kCurrentLimit);
   }
 
-  public void setSingleSolenoid(boolean climb) {
-    m_solenoid.set(climb);
+  public void climberUp(boolean climb) {
+    if (climb == true){
+      m_solenoid.set(Value.kForward);
+    }
+    else{
+      m_solenoid.set(Value.kOff);
+    }
   }
 
   public void stop() {
