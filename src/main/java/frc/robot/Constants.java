@@ -45,7 +45,7 @@ public final class Constants {
         public static final double kStabilizationD = 0;
 
         public static final double kMaxSpeed = 4.0; // meters per second
-        public static final double kMaxAngularSpeed = 2 * Math.PI; // one rotation per second
+        public static final double kMaxAngularSpeed = 3 * Math.PI; // one rotation per second
         public static final double kGathererSpeed = .5;
       
         public static final double kTrackWidth = 0.6597507168526806; // meters
