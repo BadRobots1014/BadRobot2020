@@ -42,6 +42,7 @@ import frc.robot.commands.AutoLeftCommand;
 import frc.robot.commands.AutoLeftCornerCommand;
 import frc.robot.commands.AutoMiddleCommand;
 import frc.robot.commands.AutoRightCommand;
+import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.BumpCommand;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.ControlShooterCommand;
@@ -103,6 +104,7 @@ public class RobotContainer {
   private final AutoLeftCommand m_autoLeft;
   private final AutoMiddleCommand m_autoMiddle;
   private final AutoRightCommand m_autoRight;
+  private final AutoShootCommand m_autoShoot;
   private final RainbowLedCommand m_defaultLedCommand;
   private HoldPlaceCommand m_holdPlaceCommand;
   private AimCommand m_AutoAimCommand;
@@ -147,6 +149,7 @@ public class RobotContainer {
     m_driveTrain.setDefaultCommand(m_teleopDriveCommand);
     m_shooterSubsystem.setDefaultCommand(m_controlShooterCommand);
     m_magSubsystem.setDefaultCommand(new RunCommand(() -> m_magSubsystem.controlMagazine(), m_magSubsystem));
+    m_gathererSubsystem.setDefaultCommand(new ConditionalCommand(new RunCommand(() -> m_gathererSubsystem.runGatherer(), m_gathererSubsystem), new InstantCommand(), m_gathererSubsystem.isGathererOut()))
     configureButtonBindings();
     
 
@@ -155,6 +158,7 @@ public class RobotContainer {
     m_autoLeft = new AutoLeftCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
     m_autoMiddle = new AutoMiddleCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
     m_autoRight = new AutoRightCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
+    m_autoShoot = new AutoShootCommand(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem);
     // Configure SmartDashboard Tabs
     configureAutonomousTab();
 
@@ -245,7 +249,7 @@ public class RobotContainer {
     .whenReleased( // new ConditionalCommand(new RunCommand(() -> m_gathererSubsystem.runGatherer(), m_gathererSubsystem), new InstantCommand(), m_gathererSubsystem::runGathererReversed)
       () -> {
       if (m_gathererSubsystem.isGathererOut()) {
-          m_gathererSubsystem.runGatherer();
+          m_gathererSubsystem.stopGather();
         }
       }
     );
@@ -311,6 +315,7 @@ public class RobotContainer {
     m_autonomousChooser.addOption("Left", m_autoLeft);
     m_autonomousChooser.addOption("Middle", m_autoMiddle);
     m_autonomousChooser.addOption("Right", m_autoRight);
+    m_autonomousChooser.addOption("Shoot", m_autoShoot);
     m_autonomousChooser.addOption("Hold Place", new PrintCommand("Not doing anything for auton"));
 
 
