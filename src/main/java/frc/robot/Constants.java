@@ -44,8 +44,8 @@ public final class Constants {
         public static final double kStabilizationI = 0.5;
         public static final double kStabilizationD = 0;
 
-        public static final double kMaxSpeed = 4.0; // meters per second
-        public static final double kMaxAngularSpeed = 2 * Math.PI; // one rotation per second
+        public static final double kMaxSpeed = 3.0; // meters per second
+        public static final double kMaxAngularSpeed = 3 * Math.PI; // one rotation per second
         public static final double kGathererSpeed = .5;
       
         public static final double kTrackWidth = 0.6597507168526806; // meters
@@ -86,7 +86,7 @@ public final class Constants {
 
         public static final double kFeedThresholdAngularSpeedDelta = 50.00;
 
-        public static final double kShootThresholdAngularSpeedDelta = -500; // placeholder value
+        public static final double kShootThresholdAngularSpeedDelta = -7500; // placeholder value
         public static final double kShootThresholdActiveCurrentDelta = 4.000;
 
         public static final double kDelay = 1.0;

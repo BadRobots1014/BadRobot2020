@@ -22,6 +22,9 @@ public class TurnCommand extends CommandBase {
     private final PIDController m_pidController = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
   /**
    * Creates a new TurnCommand.
+   * @param driveTrain The drive train to use
+   * @param gyro The gyro to use
+   * @param angle The angle to turn
    */
   public TurnCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro, double angle) {
     m_driveTrain = driveTrain;
@@ -33,6 +36,27 @@ public class TurnCommand extends CommandBase {
 
     addRequirements(driveTrain);
   }
+
+  /**
+   * Creates a new TurnCommand.
+   * @param driveTrain The drive train to use
+   * @param gyro The gyro to use
+   * @param angle The angle to turn
+   * @param angleTolerance The tolerance for the PID algorithm
+   */
+  public TurnCommand(DriveTrainSubsystem driveTrain, GyroProvider gyro, double angle, double angleTolerance) {
+    m_driveTrain = driveTrain;
+    m_gyro = gyro;
+    m_angle = angle;
+
+    m_pidController.enableContinuousInput(-180, 180);
+    m_pidController.setTolerance(angleTolerance, DriveConstants.kTurnRateToleranceDegPerS);
+
+    addRequirements(driveTrain);
+  }
+
+
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {

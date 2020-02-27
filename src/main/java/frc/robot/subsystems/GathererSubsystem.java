@@ -44,6 +44,14 @@ public class GathererSubsystem extends SubsystemBase {
     }
   }
 
+  public void gathererToggle(boolean climb) {
+    if (m_doubleSolenoid.get() == Value.kReverse) {
+      gathererOut(climb);
+    } else if (m_doubleSolenoid.get() == Value.kForward) {
+      gathererIn(climb);
+    }
+  }
+
   public void runGatherer() {
     m_gatherer.set(ControlMode.PercentOutput, kGathererSpeed);
   }

@@ -39,7 +39,14 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
         }),
         new ParallelRaceGroup(
           new RunMagazineMotorCommand(magSubsystem),
-          new RunGathererReversedCommand(gathererSubsystem),
+          new SequentialCommandGroup(
+            new WaitCommand(2.0),
+            new ParallelRaceGroup(
+              new RunGathererReversedCommand(gathererSubsystem),
+              new WaitCommand(1.0)
+            ),
+            new GatherCommand(gathererSubsystem)
+          ),
           new WaitUntilCommand(() -> {
             if (shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta // should be negative
             //&& m_shooterSubsystem.getDeltaDesiredActiveCurrent() >= ShooterConstants.kShootThresholdActiveCurrentDelta
@@ -48,7 +55,7 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
             } else {
               return false;
             }
-          })
+          }).withTimeout(6.0)
         ),
         new WaitCommand(ShooterConstants.kDelay)
       )
