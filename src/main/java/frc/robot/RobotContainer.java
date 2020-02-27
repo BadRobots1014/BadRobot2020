@@ -250,7 +250,7 @@ public class RobotContainer {
     .whenPressed(() -> m_climberSubsystem.setSingleSolenoid(true))
     .whenReleased(() -> m_climberSubsystem.setSingleSolenoid(false));
 
-    /*
+    /* If you want to use these then change the buttons
     new JoystickButton(m_attachmentsController, Button.kBumperLeft.value)
     .whenPressed(() -> m_gathererSubsystem.gathererIn(true))
     .whenReleased(() -> m_gathererSubsystem.gathererIn(false));
