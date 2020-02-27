@@ -161,7 +161,7 @@ public class RobotContainer {
     m_autoLeft = new AutoLeftCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
     m_autoMiddle = new AutoMiddleCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
     m_autoRight = new AutoRightCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
-    m_autoShoot = new AutoShootCommand(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem);
+    m_autoShoot = new AutoShootCommand(m_driveTrain, m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem);
     // Configure SmartDashboard Tabs
     configureAutonomousTab();
 

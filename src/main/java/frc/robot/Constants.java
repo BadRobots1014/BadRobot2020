@@ -86,7 +86,7 @@ public final class Constants {
 
         public static final double kFeedThresholdAngularSpeedDelta = 50.00;
 
-        public static final double kShootThresholdAngularSpeedDelta = -500; // placeholder value
+        public static final double kShootThresholdAngularSpeedDelta = -250; // placeholder value
         public static final double kShootThresholdActiveCurrentDelta = 4.000;
 
         public static final double kDelay = 1.0;
