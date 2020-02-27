@@ -19,18 +19,16 @@ camera needs to be able to see it)
 y (Hold) ------------------------ Holds Position (Useful when 
 shooting. Ensures that the robot stays in current orientation.)
 
+Back (Hold) --------------------- Climb (Activates Winch)
+
+Start (Toggle) ------------------ Lifter Up/Down
+
 
 ### Attachments Controls
 
 LB/Left Bumper (Hold) ----------- Activates Shooter then feeds
 
 RB/Right Bumper (Toggle) -------- Gatherer In/Out
-
-Back (Hold) --------------------- Climb (Activates Winch)
-
-Start (Toggle) ------------------ Lifter Up/Down
-
-B (Hold) ------------------------ Run gatherer inward
 
 Y (Hold) ------------------------ Run magazine toward shooter
 
