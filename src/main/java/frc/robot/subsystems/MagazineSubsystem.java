@@ -40,6 +40,10 @@ public class MagazineSubsystem extends SubsystemBase {
     m_magazineMotor.set(ControlMode.PercentOutput, MagazineConstants.kMaxSpeed);
   }
 
+  public void runMotorReversed() {
+    m_magazineMotor.set(ControlMode.PercentOutput, -MagazineConstants.kMaxSpeed);
+  }
+
   public void stopMotor() {
     m_magazineMotor.set(ControlMode.PercentOutput, 0);
   }

@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.SingleFireCommandGroup;
 import edu.wpi.first.wpilibj.Servo;
 
 
@@ -28,6 +31,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final NetworkTableEntry m_deltaVelocityEntry = m_shooterTab.add("Delta Velocity", 0).getEntry();
 
   private final Servo m_servoDawg= new Servo(0);
+
+  public final double kDeadband = 0.05;
+  private DoubleSupplier m_joystickSupplier = () -> 0.0;
   /**
    * Creates a new ExampleSubsystem.
    */
@@ -39,6 +45,9 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooterMotor.config_kP(0, ShooterConstants.kP);
   }
 
+  public void setJoystickSupplier(DoubleSupplier joystickSupplier) {
+    m_joystickSupplier = joystickSupplier;
+  }
   public void extendServo() {
     m_servoDawg.setAngle(67);
   }
@@ -49,6 +58,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void runShooter() {
     m_shooterMotor.set(TalonFXControlMode.Velocity, ShooterConstants.kDesiredAngularSpeed);
+  }
+
+  public void controlShooter() {
+    if (Math.abs(m_joystickSupplier.getAsDouble()) < kDeadband) {
+      m_shooterMotor.set(TalonFXControlMode.PercentOutput, m_joystickSupplier.getAsDouble());
+    }
   }
 
   public void stopShooter() {
