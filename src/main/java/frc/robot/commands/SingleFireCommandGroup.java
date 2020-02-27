@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -39,14 +40,15 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
         }),
         new ParallelRaceGroup(
           new RunMagazineMotorCommand(magSubsystem),
-          new SequentialCommandGroup(
-            new WaitCommand(2.0),
-            new ParallelRaceGroup(
-              new RunGathererReversedCommand(gathererSubsystem),
-              new WaitCommand(1.0)
-            ),
-            new GatherCommand(gathererSubsystem)
-          ),
+
+          // new SequentialCommandGroup(
+          //   new WaitCommand(2.0),
+          //   new ParallelRaceGroup(
+          //     new RunGathererReversedCommand(gathererSubsystem),
+          //     new WaitCommand(1.0)
+          //   ),
+          //   new GatherCommand(gathererSubsystem)
+          // ),
           new WaitUntilCommand(() -> {
             if (shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta // should be negative
             //&& m_shooterSubsystem.getDeltaDesiredActiveCurrent() >= ShooterConstants.kShootThresholdActiveCurrentDelta

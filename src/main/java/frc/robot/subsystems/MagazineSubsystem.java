@@ -7,6 +7,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -28,12 +31,30 @@ public class MagazineSubsystem extends SubsystemBase {
   private final NetworkTableEntry m_inSensorState = m_shooterTab.add("Magazine input sensor state", true).getEntry();
   private final NetworkTableEntry m_outSensorState = m_shooterTab.add("Magazine output sensor state", true).getEntry();
   private final NetworkTableEntry m_ballCount = m_shooterTab.add("Magazine ball count", 0).getEntry();
+
+  
+  private DoubleSupplier m_joystickSupplier = () -> 0.0;
+  private BooleanSupplier m_triggerSupplier = () -> false;
+  
   /**
    * Creates a new MagazineSubsystem.
    */
   public MagazineSubsystem(TalonSRX magMotor) {
     m_magazineMotor = magMotor;
     m_magazineMotor.setInverted(true);
+  }
+
+  public void setJoystickSupplier(DoubleSupplier joystickSupplier, BooleanSupplier triggerSupplier) {
+    m_joystickSupplier = joystickSupplier;
+    m_triggerSupplier = triggerSupplier;
+  }
+
+  public void controlMagazine() {
+    if (m_triggerSupplier.getAsBoolean()) {
+      m_magazineMotor.set(ControlMode.PercentOutput, m_joystickSupplier.getAsDouble());
+    } else {
+      m_magazineMotor.set(ControlMode.PercentOutput, 0);
+    }
   }
 
   public void runMotor() {

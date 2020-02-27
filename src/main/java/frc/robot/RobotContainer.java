@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -46,6 +47,8 @@ import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.ControlShooterCommand;
 import frc.robot.commands.ExtendShooterHoodCommand;
 import frc.robot.commands.GatherCommand;
+import frc.robot.commands.GathererInCommand;
+import frc.robot.commands.GathererOutCommand;
 import frc.robot.commands.HoldPlaceCommand;
 import frc.robot.commands.RainbowLedCommand;
 import frc.robot.commands.RunGathererReversedCommand;
@@ -110,6 +113,8 @@ public class RobotContainer {
 
   private ControllerSetup controllerSetupMode = ControllerSetup.COMPETITION;
 
+  private boolean m_gathererState; // False = in
+
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -141,6 +146,7 @@ public class RobotContainer {
     m_LEDSubsystem.setDefaultCommand(m_defaultLedCommand);
     m_driveTrain.setDefaultCommand(m_teleopDriveCommand);
     m_shooterSubsystem.setDefaultCommand(m_controlShooterCommand);
+    m_magSubsystem.setDefaultCommand(new RunCommand(() -> m_magSubsystem.controlMagazine(), m_magSubsystem));
     configureButtonBindings();
     
 
@@ -151,6 +157,8 @@ public class RobotContainer {
     m_autoRight = new AutoRightCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
     // Configure SmartDashboard Tabs
     configureAutonomousTab();
+
+    m_gathererState = false;
 
   }
 
@@ -196,6 +204,12 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kB.value)
     .whileHeld(m_holdPlaceCommand);
 
+    
+    new JoystickButton(m_driverController, Button.kBack.value)
+    .whenHeld(m_climbCommand);
+
+    new JoystickButton(m_driverController, Button.kStart.value)
+    .whenPressed(() -> m_climberSubsystem.climberToggle(), m_climberSubsystem);
 
   }
 
@@ -214,15 +228,30 @@ public class RobotContainer {
   private void configureAttachmentControls()
   {
     // Unjam Gatherer
+    /*
     new JoystickButton(m_attachmentsController, Button.kB.value)
     .whenPressed(() -> m_gathererSubsystem.runGatherer())
     .whenReleased(() -> m_gathererSubsystem.stopGather());
+    */
 
     new JoystickButton(m_attachmentsController, Button.kA.value)
-    .whenPressed(() -> m_gathererSubsystem.runGathererReversed())
-    .whenReleased(() -> m_gathererSubsystem.stopGather());
+    .whenPressed( // new ConditionalCommand(new RunCommand(() -> m_gathererSubsystem.runGathererReversed(), m_gathererSubsystem), new InstantCommand(), m_gathererSubsystem::runGathererReversed)
+      () -> {
+        if (m_gathererSubsystem.isGathererOut()) {
+          m_gathererSubsystem.runGathererReversed();
+        }
+      }
+      )
+    .whenReleased( // new ConditionalCommand(new RunCommand(() -> m_gathererSubsystem.runGatherer(), m_gathererSubsystem), new InstantCommand(), m_gathererSubsystem::runGathererReversed)
+      () -> {
+      if (m_gathererSubsystem.isGathererOut()) {
+          m_gathererSubsystem.runGatherer();
+        }
+      }
+    );
 
-    // Unjam Magazine
+
+    // Run Magazine
     new JoystickButton(m_attachmentsController, Button.kY.value)
     .whenPressed(() -> m_magSubsystem.runMotor())
     .whenReleased(() -> m_magSubsystem.stopMotor());
@@ -233,7 +262,13 @@ public class RobotContainer {
 
     // Unjam Shooter
     DoubleSupplier leftYJoystick = () -> m_attachmentsController.getY(Hand.kLeft);
-    m_shooterSubsystem.setJoystickSupplier(leftYJoystick);
+    BooleanSupplier leftTrigger = () -> m_attachmentsController.getTriggerAxis(Hand.kLeft) > 0.5;
+    m_magSubsystem.setJoystickSupplier(leftYJoystick, leftTrigger);
+
+    // Unjam Magazine
+    DoubleSupplier rightYJoystick = () -> m_attachmentsController.getY(Hand.kRight);
+    BooleanSupplier rightTrigger = () -> m_attachmentsController.getTriggerAxis(Hand.kRight) > 0.5;
+    m_shooterSubsystem.setJoystickSupplier(rightYJoystick, rightTrigger);
 
     new JoystickButton(m_attachmentsController, Button.kBumperLeft.value)
     .whenHeld(m_singleFireCommand);
@@ -242,12 +277,6 @@ public class RobotContainer {
     new JoystickButton(m_attachmentsController, Button.kX.value)
     .whenHeld(new HoodCommand(m_shooterSubsystem));
     */
-    
-    new JoystickButton(m_attachmentsController, Button.kBack.value)
-    .whenHeld(m_climbCommand);
-
-    new JoystickButton(m_attachmentsController, Button.kStart.value)
-    .whenPressed(() -> m_climberSubsystem.climberToggle(), m_climberSubsystem);
     // .whenReleased(() -> m_climberSubsystem.climberToggle(), m_climberSubsystem);
 
     /* If you want to use these then change the buttons
@@ -261,7 +290,9 @@ public class RobotContainer {
     */
 
     new JoystickButton(m_attachmentsController, Button.kBumperRight.value)
-    .whenPressed(() -> m_gathererSubsystem.gathererToggle());
+    .whenPressed(new ConditionalCommand(new GathererInCommand(m_gathererSubsystem), new GathererOutCommand(m_gathererSubsystem), m_gathererSubsystem::isGathererOut));
+    //.whenPressed(() -> m_gathererSubsystem.gathererToggle());
+    
     /*
     new JoystickButton(m_attachmentsController, Button.kX.value)
     .whenPressed(new ExtendShooterHoodCommand(m_shooterSubsystem));

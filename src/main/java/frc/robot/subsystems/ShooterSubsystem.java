@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -34,6 +35,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public final double kDeadband = 0.05;
   private DoubleSupplier m_joystickSupplier = () -> 0.0;
+  private BooleanSupplier m_triggerSupplier = () -> false;
+  
   /**
    * Creates a new ExampleSubsystem.
    */
@@ -45,9 +48,11 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooterMotor.config_kP(0, ShooterConstants.kP);
   }
 
-  public void setJoystickSupplier(DoubleSupplier joystickSupplier) {
+  public void setJoystickSupplier(DoubleSupplier joystickSupplier, BooleanSupplier triggerSupplier) {
     m_joystickSupplier = joystickSupplier;
+    m_triggerSupplier = triggerSupplier;
   }
+  
   public void extendServo() {
     m_servoDawg.setAngle(67);
   }
@@ -61,8 +66,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void controlShooter() {
-    if (Math.abs(m_joystickSupplier.getAsDouble()) > kDeadband) {
+    if (m_triggerSupplier.getAsBoolean()) {
       m_shooterMotor.set(TalonFXControlMode.PercentOutput, m_joystickSupplier.getAsDouble());
+    } else {
+      m_shooterMotor.set(TalonFXControlMode.PercentOutput, 0);
     }
   }
 
