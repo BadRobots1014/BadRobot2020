@@ -5,9 +5,11 @@
 ### Driver Controls
 
 Left Trigger (Hold) ------------- Enables Arcade Drive (Useful for turning in place)
+
 Left/Right Bumpers (click) ------ Small turns, for slight adjustments
 
 Left Joystick Y ----------------- Forward/Backward
+
 Right Joystick X ---------------- Turning
 
 X (Hold) ------------------------ Auto Aims (Only used when
@@ -20,19 +22,23 @@ shooting. Ensures that the robot stays in current orientation.)
 
 ### Attachments Controls
 
-LB/Left Bumper (Hold) ----------- Shoots (single ball sequence)
+LB/Left Bumper (Hold) ----------- Activates Shooter then feeds
+
 RB/Right Bumper (Toggle) -------- Gatherer In/Out
 
 Back (Hold) --------------------- Climb (Activates Winch)
+
 Start (Toggle) ------------------ Lifter Up/Down
 
 B (Hold) ------------------------ Run gatherer inward
+
 Y (Hold) ------------------------ Run magazine toward shooter
 
 
 ### Manual Attachment Controls (Shouldn't be used unless NEEDED):
 
 A (Hold) ------------------------ Run gatherer outward
+S
 X (Hold) ------------------------ Run magazine away from shooter
 
 
