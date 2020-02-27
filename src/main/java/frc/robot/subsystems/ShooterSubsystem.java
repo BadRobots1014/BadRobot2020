@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.Servo;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX m_shooterMotor = new TalonFX(ShooterConstants.kShooterId);
-  private final ShuffleboardTab m_shooterTab = Shuffleboard.getTab("Shooter");
+  private final ShuffleboardTab m_shooterTab = Shuffleboard.getTab("Shooting");
   private final NetworkTableEntry m_velocityEntry = m_shooterTab.add("Shooter Velocity", 0).getEntry();
   private final NetworkTableEntry m_currentEntry = m_shooterTab.add("Shooter Current", 0).getEntry();
   private final NetworkTableEntry m_deltaVelocityEntry = m_shooterTab.add("Delta Velocity", 0).getEntry();
