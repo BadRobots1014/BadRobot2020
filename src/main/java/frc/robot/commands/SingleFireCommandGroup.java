@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.PerpetualCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -30,6 +31,10 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(
+      new ParallelCommandGroup(
+        new GathererOutCommand(gathererSubsystem),
+        new RunCommand(() -> gathererSubsystem.stopGather(), gathererSubsystem)
+      ),
       new RunShooterCommand(shooterSubsystem),
       new SequentialCommandGroup(
         new WaitUntilCommand(() -> {

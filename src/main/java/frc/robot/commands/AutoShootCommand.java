@@ -10,6 +10,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
@@ -27,16 +28,17 @@ public class AutoShootCommand extends SequentialCommandGroup {
    * Creates a new AutoDriveCommandGroup.
    */
   LEDSubsystem m_lights;
-  public AutoShootCommand(ShooterSubsystem m_shooter, MagazineSubsystem m_magazine, GathererSubsystem m_gatherer) {    
+  public AutoShootCommand(DriveTrainSubsystem m_drive, ShooterSubsystem m_shooter, MagazineSubsystem m_magazine, GathererSubsystem m_gatherer) {    
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
-    addCommands(new SingleFireCommandGroup(m_shooter, m_magazine, m_gatherer)
+    addCommands(new SingleFireCommandGroup(m_shooter, m_magazine, m_gatherer),
                 // RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                 // .andThen(() -> driveTrain.stop()),
                 // RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                 // .andThen(() -> driveTrain.stop()),
                 // RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                 // .andThen(() -> driveTrain.stop())
+                new RunCommand(() -> m_drive.arcadeDrive(.75, 0), m_drive).withTimeout(0.5).andThen(() -> m_drive.stop())
     );
   }
 

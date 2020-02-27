@@ -149,7 +149,10 @@ public class RobotContainer {
     m_driveTrain.setDefaultCommand(m_teleopDriveCommand);
     m_shooterSubsystem.setDefaultCommand(m_controlShooterCommand);
     m_magSubsystem.setDefaultCommand(new RunCommand(() -> m_magSubsystem.controlMagazine(), m_magSubsystem));
-    m_gathererSubsystem.setDefaultCommand(new ConditionalCommand(new RunCommand(() -> m_gathererSubsystem.runGatherer(), m_gathererSubsystem), new InstantCommand(), m_gathererSubsystem.isGathererOut()))
+    m_gathererSubsystem.setDefaultCommand(new ConditionalCommand(
+      new RunCommand(() -> m_gathererSubsystem.runGatherer(), m_gathererSubsystem),
+      new InstantCommand(),
+      m_gathererSubsystem::isGathererOut));
     configureButtonBindings();
     
 
@@ -257,12 +260,10 @@ public class RobotContainer {
 
     // Run Magazine
     new JoystickButton(m_attachmentsController, Button.kY.value)
-    .whenPressed(() -> m_magSubsystem.runMotor())
-    .whenReleased(() -> m_magSubsystem.stopMotor());
+    .whenHeld(new RunMagazineMotorCommand(m_magSubsystem));
 
     new JoystickButton(m_attachmentsController, Button.kX.value)
-    .whenPressed(() -> m_magSubsystem.runMotorReversed())
-    .whenReleased(() -> m_magSubsystem.stopMotor());
+    .whenHeld(new RunMagazineReversedCommand(m_magSubsystem));
 
     // Unjam Shooter
     DoubleSupplier leftYJoystick = () -> m_attachmentsController.getY(Hand.kLeft);
@@ -275,7 +276,7 @@ public class RobotContainer {
     m_shooterSubsystem.setJoystickSupplier(rightYJoystick, rightTrigger);
 
     new JoystickButton(m_attachmentsController, Button.kBumperLeft.value)
-    .whenHeld(m_singleFireCommand);
+    .whileHeld(m_singleFireCommand);
 
     /*
     new JoystickButton(m_attachmentsController, Button.kX.value)
