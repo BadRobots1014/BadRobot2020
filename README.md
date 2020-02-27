@@ -38,7 +38,7 @@ Y (Hold) ------------------------ Run magazine toward shooter
 ### Manual Attachment Controls (Shouldn't be used unless NEEDED):
 
 A (Hold) ------------------------ Run gatherer outward
-S
+
 X (Hold) ------------------------ Run magazine away from shooter
 
 
