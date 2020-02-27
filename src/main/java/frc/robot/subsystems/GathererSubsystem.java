@@ -10,8 +10,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class GathererSubsystem extends SubsystemBase {
@@ -19,6 +22,9 @@ public class GathererSubsystem extends SubsystemBase {
   public static final double kGathererSpeed = .5;
 
   private final TalonSRX m_gatherer;
+
+  private final ShuffleboardTab m_gathererTab = Shuffleboard.getTab("Gatherer");
+  private final NetworkTableEntry m_gathererState = m_gathererTab.add("Gatherer State", false).getEntry(); // False is gatherer in, true is gatherer out
 
   /**
    * Creates a new ExampleSubsystem.
@@ -34,6 +40,7 @@ public class GathererSubsystem extends SubsystemBase {
     } else {
       m_doubleSolenoid.set(Value.kOff);
     }
+    m_gathererState.setBoolean(true);
   }
 
   public void gathererIn(boolean climb) {
@@ -42,13 +49,14 @@ public class GathererSubsystem extends SubsystemBase {
     } else {
       m_doubleSolenoid.set(Value.kOff);
     }
+    m_gathererState.setBoolean(false);
   }
 
   public void gathererToggle(boolean climb) {
-    if (m_doubleSolenoid.get() == Value.kReverse) {
-      gathererOut(climb);
-    } else if (m_doubleSolenoid.get() == Value.kForward) {
+    if (m_gathererState.getBoolean(false)) {
       gathererIn(climb);
+    } else {
+      gathererOut(climb);
     }
   }
 
