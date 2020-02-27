@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
@@ -151,7 +152,6 @@ public class RobotContainer {
     // Configure SmartDashboard Tabs
     configureAutonomousTab();
 
-
   }
 
   /**
@@ -247,8 +247,8 @@ public class RobotContainer {
     .whenHeld(m_climbCommand);
 
     new JoystickButton(m_attachmentsController, Button.kStart.value)
-    .whenPressed(() -> m_climberSubsystem.climberUp(true))
-    .whenReleased(() -> m_climberSubsystem.climberUp(false));
+    .whenPressed(() -> m_climberSubsystem.climberToggle(), m_climberSubsystem);
+    // .whenReleased(() -> m_climberSubsystem.climberToggle(), m_climberSubsystem);
 
     /* If you want to use these then change the buttons
     new JoystickButton(m_attachmentsController, Button.kBumperLeft.value)
@@ -261,9 +261,7 @@ public class RobotContainer {
     */
 
     new JoystickButton(m_attachmentsController, Button.kBumperRight.value)
-    .whenPressed(() -> m_gathererSubsystem.gathererToggle(true))
-    .whenReleased(() -> m_gathererSubsystem.gathererToggle(false));
-
+    .whenPressed(() -> m_gathererSubsystem.gathererToggle());
     /*
     new JoystickButton(m_attachmentsController, Button.kX.value)
     .whenPressed(new ExtendShooterHoodCommand(m_shooterSubsystem));

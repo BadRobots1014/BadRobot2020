@@ -28,27 +28,21 @@ public class GathererSubsystem extends SubsystemBase {
     m_gatherer.setInverted(true);
   }
 
-  public void gathererOut(boolean climb) {
-    if (climb) {
-      m_doubleSolenoid.set(Value.kForward);
-    } else {
-      m_doubleSolenoid.set(Value.kOff);
-    }
+  public void gathererOut() {
+    m_doubleSolenoid.set(Value.kForward);
   }
 
-  public void gathererIn(boolean climb) {
-    if (climb) {
-      m_doubleSolenoid.set(Value.kReverse);
-    } else {
-      m_doubleSolenoid.set(Value.kOff);
-    }
+  public void gathererIn() {
+    m_doubleSolenoid.set(Value.kReverse);
   }
 
-  public void gathererToggle(boolean climb) {
+  public void gathererToggle() {
     if (m_doubleSolenoid.get() == Value.kReverse) {
-      gathererOut(climb);
+      gathererOut();
     } else if (m_doubleSolenoid.get() == Value.kForward) {
-      gathererIn(climb);
+      gathererIn();
+    } else {
+      gathererOut();
     }
   }
 

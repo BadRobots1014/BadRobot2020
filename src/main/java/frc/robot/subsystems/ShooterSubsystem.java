@@ -61,7 +61,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void controlShooter() {
-    if (Math.abs(m_joystickSupplier.getAsDouble()) < kDeadband) {
+    if (Math.abs(m_joystickSupplier.getAsDouble()) > kDeadband) {
       m_shooterMotor.set(TalonFXControlMode.PercentOutput, m_joystickSupplier.getAsDouble());
     }
   }

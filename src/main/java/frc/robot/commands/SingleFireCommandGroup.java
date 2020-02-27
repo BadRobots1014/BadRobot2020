@@ -55,7 +55,7 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
             } else {
               return false;
             }
-          }).withTimeout(6.0)
+          })//.withTimeout(6.0)
         ),
         new WaitCommand(ShooterConstants.kDelay)
       )
