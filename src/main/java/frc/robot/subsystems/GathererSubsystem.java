@@ -26,14 +26,23 @@ public class GathererSubsystem extends SubsystemBase {
   public GathererSubsystem(TalonSRX talon) {
     m_gatherer = talon;
     m_gatherer.setInverted(true);
+
+  }
+
+  public boolean isGathererOut() {
+    boolean gathererState = m_doubleSolenoid.get() == Value.kReverse;
+    System.out.println("Gatherer is out:" + gathererState);
+    return gathererState;
   }
 
   public void gathererOut() {
-    m_doubleSolenoid.set(Value.kForward);
+    System.out.println("Gather out");
+    m_doubleSolenoid.set(Value.kReverse);
   }
 
   public void gathererIn() {
-    m_doubleSolenoid.set(Value.kReverse);
+    System.out.println("Gather in");
+    m_doubleSolenoid.set(Value.kForward);
   }
 
   public void gathererToggle() {
