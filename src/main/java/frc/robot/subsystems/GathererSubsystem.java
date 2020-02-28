@@ -56,6 +56,7 @@ public class GathererSubsystem extends SubsystemBase {
   }
 
   public void runGatherer() { // Run gatherer now only works if the gatherer is out.
+                              // We only ever want to run the gatherer while it is out
     if (isGathererOut()) {
       m_gatherer.set(ControlMode.PercentOutput, kGathererSpeed);
     } else {

@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -23,7 +24,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class SingleFireCommandGroup extends ParallelRaceGroup {
+public class SingleFireCommandGroup extends ParallelDeadlineGroup {
   /**
    * Creates a new SingleFireCommandGroup.
    */
@@ -40,12 +41,7 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(
-      new SequentialCommandGroup( // Make sequential: cannot use a subsystem in two places at once
-        new GathererOutCommand(gathererSubsystem),
-        new RunCommand(() -> gathererSubsystem.stopGather(), gathererSubsystem) // IF this doesn't override the default command...
-      ),
-      new RunShooterCommand(shooterSubsystem),
-      new SequentialCommandGroup(
+      new SequentialCommandGroup( // Deadline command
         new WaitUntilCommand(() -> {
           if (shooterSubsystem.getDeltaDesiredVelocity() >= -ShooterConstants.kFeedThresholdAngularSpeedDelta
           && shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kFeedThresholdAngularSpeedDelta) {
@@ -54,19 +50,7 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
             return false;
           }
         }),
-        new ParallelRaceGroup(
-          new ParallelCommandGroup( // This timeout needs to work without stopping the shooter -- check this.
-            new RunMagazineMotorCommand(magSubsystem).withTimeout(1.0), 
-            new PerpetualCommand(new InstantCommand())
-          // new SequentialCommandGroup(
-          //   new WaitCommand(2.0),)
-          //   new ParallelRaceGroup(
-          //     new RunGathererReversedCommand(gathererSubsystem),
-          //     new WaitCommand(1.0)
-          //   ),
-          //   new GatherCommand(gathererSubsystem)
-          // ),
-          ),
+        new ParallelDeadlineGroup(
           new WaitUntilCommand(() -> { // This is sus.
             if (shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta // should be negative
             //&& m_shooterSubsystem.getDeltaDesiredActiveCurrent() >= ShooterConstants.kShootThresholdActiveCurrentDelta
@@ -75,10 +59,24 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
             } else {
               return false;
             }
-          })//.withTimeout(6.0)
+          }),//.withTimeout(6.0)
+          new RunMagazineMotorCommand(magSubsystem).withTimeout(1.0)
+          // new SequentialCommandGroup(
+          //   new WaitCommand(2.0),)
+          //   new ParallelRaceGroup(
+          //     new RunGathererReversedCommand(gathererSubsystem),
+          //     new WaitCommand(1.0)
+          //   ),
+          //   new GatherCommand(gathererSubsystem)
+          // ),
         ),
-        new WaitCommand(ShooterConstants.kDelay)
-      )
+        new WaitCommand(ShooterConstants.kDelay) // Do we need this or can it do without?
+      ),
+      new SequentialCommandGroup( // Make sequential: cannot use a subsystem in two places at once
+        new GathererOutCommand(gathererSubsystem),
+        new RunCommand(() -> gathererSubsystem.stopGather(), gathererSubsystem) // IF this doesn't override the default command...
+      ),
+      new RunShooterCommand(shooterSubsystem)
     );
   }
 }
