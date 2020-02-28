@@ -27,13 +27,22 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
   /**
    * Creates a new SingleFireCommandGroup.
    */
+
+  /*
+  The plan if this doesn't work:
+  DO IT MANUALLY.
+  1. EXTEND THE GATHERER!--PUSH RIGHT BUMPER!
+  2. Rev up the shooter--use the right trigger and joystick, or create a button binding for RunShooterCommand
+  3. Use the button controls for the magazine--PUSH Y!
+  4. REMEMBER TO DO 2 AND 3 SIMULTANEOUSLY! YOU NEED TO KEEP THE SHOOTER RUNNING!
+  */
   public SingleFireCommandGroup(ShooterSubsystem shooterSubsystem, MagazineSubsystem magSubsystem, GathererSubsystem gathererSubsystem) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(
-      new ParallelCommandGroup(
+      new SequentialCommandGroup( // Make sequential: cannot use a subsystem in two places at once
         new GathererOutCommand(gathererSubsystem),
-        new RunCommand(() -> gathererSubsystem.stopGather(), gathererSubsystem)
+        new RunCommand(() -> gathererSubsystem.stopGather(), gathererSubsystem) // IF this doesn't override the default command...
       ),
       new RunShooterCommand(shooterSubsystem),
       new SequentialCommandGroup(
@@ -46,8 +55,8 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
           }
         }),
         new ParallelRaceGroup(
-          new ParallelCommandGroup(
-            new RunMagazineMotorCommand(magSubsystem).withTimeout(1.0),
+          new ParallelCommandGroup( // This timeout needs to work without stopping the shooter -- check this.
+            new RunMagazineMotorCommand(magSubsystem).withTimeout(1.0), 
             new PerpetualCommand(new InstantCommand())
           // new SequentialCommandGroup(
           //   new WaitCommand(2.0),)
@@ -58,7 +67,7 @@ public class SingleFireCommandGroup extends ParallelRaceGroup {
           //   new GatherCommand(gathererSubsystem)
           // ),
           ),
-          new WaitUntilCommand(() -> {
+          new WaitUntilCommand(() -> { // This is sus.
             if (shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta // should be negative
             //&& m_shooterSubsystem.getDeltaDesiredActiveCurrent() >= ShooterConstants.kShootThresholdActiveCurrentDelta
             ) {

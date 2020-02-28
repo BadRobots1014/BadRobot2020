@@ -146,13 +146,10 @@ public class RobotContainer {
     // Configure the button bindings
     m_defaultLedCommand = new RainbowLedCommand(m_LEDSubsystem, m_driverController, m_attachmentsController);
     m_LEDSubsystem.setDefaultCommand(m_defaultLedCommand);
-    m_driveTrain.setDefaultCommand(m_teleopDriveCommand);
-    m_shooterSubsystem.setDefaultCommand(m_controlShooterCommand);
-    m_magSubsystem.setDefaultCommand(new RunCommand(() -> m_magSubsystem.controlMagazine(), m_magSubsystem));
-    m_gathererSubsystem.setDefaultCommand(new ConditionalCommand(
-      new RunCommand(() -> m_gathererSubsystem.runGatherer(), m_gathererSubsystem),
-      new InstantCommand(),
-      m_gathererSubsystem::isGathererOut));
+    m_driveTrain.setDefaultCommand(m_teleopDriveCommand); 
+    m_shooterSubsystem.setDefaultCommand(m_controlShooterCommand); // This works.
+    m_magSubsystem.setDefaultCommand(new RunCommand(() -> m_magSubsystem.controlMagazine(), m_magSubsystem)); // This works.
+    m_gathererSubsystem.setDefaultCommand(new GatherCommand(m_gathererSubsystem)); // Janky, might work.
     configureButtonBindings();
     
 
@@ -220,7 +217,7 @@ public class RobotContainer {
 
   }
 
-  private void configureSingleControllerControls() {
+  private void configureSingleControllerControls() { // Irrelevant, unused
 
     new JoystickButton(m_driverController, Button.kBack.value)
     .toggleWhenPressed(m_gatherCommand);
@@ -242,20 +239,21 @@ public class RobotContainer {
     */
 
     new JoystickButton(m_attachmentsController, Button.kA.value)
-    .whenPressed( // new ConditionalCommand(new RunCommand(() -> m_gathererSubsystem.runGathererReversed(), m_gathererSubsystem), new InstantCommand(), m_gathererSubsystem::runGathererReversed)
-      () -> {
-        if (m_gathererSubsystem.isGathererOut()) {
-          m_gathererSubsystem.runGathererReversed();
-        }
-      }
-      )
-    .whenReleased( // new ConditionalCommand(new RunCommand(() -> m_gathererSubsystem.runGatherer(), m_gathererSubsystem), new InstantCommand(), m_gathererSubsystem::runGathererReversed)
-      () -> {
-      if (m_gathererSubsystem.isGathererOut()) {
-          m_gathererSubsystem.stopGather();
-        }
-      }
-    );
+    .whenPressed(new RunGathererReversedCommand(m_gathererSubsystem))
+    .whenReleased(new GatherCommand(m_gathererSubsystem)); // This better work.
+    //   () -> {
+    //     if (m_gathererSubsystem.isGathererOut()) {
+    //       m_gathererSubsystem.runGathererReversed();
+    //     }
+    //   }
+    //   )
+    // .whenReleased( // new ConditionalCommand(new RunCommand(() -> m_gathererSubsystem.runGatherer(), m_gathererSubsystem), new InstantCommand(), m_gathererSubsystem::runGathererReversed)
+    //   () -> {
+    //   if (m_gathererSubsystem.isGathererOut()) {
+    //       m_gathererSubsystem.stopGather();
+    //     }
+    //   }
+    // );
 
 
     // Run Magazine
@@ -294,8 +292,10 @@ public class RobotContainer {
     .whenReleased(() -> m_gathererSubsystem.gathererOut(false));
     */
 
-    new JoystickButton(m_attachmentsController, Button.kBumperRight.value)
-    .whenPressed(new ConditionalCommand(new GathererInCommand(m_gathererSubsystem), new GathererOutCommand(m_gathererSubsystem), m_gathererSubsystem::isGathererOut));
+    new JoystickButton(m_attachmentsController, Button.kBumperRight.value) // This works--probably.
+    .whenPressed(new ConditionalCommand(new GathererInCommand(m_gathererSubsystem),
+                                        new GathererOutCommand(m_gathererSubsystem),
+                                        m_gathererSubsystem::isGathererOut));
     //.whenPressed(() -> m_gathererSubsystem.gathererToggle());
     
     /*

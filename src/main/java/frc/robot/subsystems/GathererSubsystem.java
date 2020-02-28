@@ -55,13 +55,25 @@ public class GathererSubsystem extends SubsystemBase {
     }
   }
 
-  public void runGatherer() {
-    m_gatherer.set(ControlMode.PercentOutput, kGathererSpeed);
+  public void runGatherer() { // Run gatherer now only works if the gatherer is out.
+    if (isGathererOut()) {
+      m_gatherer.set(ControlMode.PercentOutput, kGathererSpeed);
+    } else {
+      m_gatherer.set(ControlMode.PercentOutput, 0);
+    }
   }
 
-  public void runGathererReversed() {
-    m_gatherer.set(ControlMode.PercentOutput, -kGathererSpeed);
+  public void runGathererReversed() { // Run gatherer now only works if the gatherer is out.
+    if (isGathererOut()) {
+      m_gatherer.set(ControlMode.PercentOutput, -kGathererSpeed);
+    } else {
+      m_gatherer.set(ControlMode.PercentOutput, 0);
+    }
   }
+
+  // public void runGathererReversed() {
+  //   m_gatherer.set(ControlMode.PercentOutput, -kGathererSpeed);
+  // }
 
   public void stopGather() {
     m_gatherer.set(ControlMode.PercentOutput, 0);
