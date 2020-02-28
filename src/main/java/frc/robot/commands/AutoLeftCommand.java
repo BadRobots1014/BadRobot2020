@@ -32,12 +32,11 @@ public class AutoLeftCommand extends SequentialCommandGroup {
     GathererSubsystem gatherer, MagazineSubsystem magazine) {
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
-    addCommands(RamseteUtil.getRamseteCommandForPath("paths/RedLeftStart.wpilib.json", driveTrain)
-                .beforeStarting(() -> driveTrain.setPose(new Pose2d(3.198, -2.357, new Rotation2d(0))))
-                .andThen(() -> driveTrain.stop()),
-                new SingleFireCommandGroup(shooter, magazine, gatherer)
+    addCommands(new SingleFireCommandGroup(shooter, magazine, gatherer)
+                .andThen(new GathererOutCommand(gatherer))
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedMiddleCollect.wpilib.json", driveTrain)
+                .beforeStarting(() -> driveTrain.setPose(new Pose2d(3.019, -2.5, new Rotation2d(0))))
                 .raceWith(new GatherCommand(gatherer))
                 .andThen(() -> driveTrain.stop())
                 .andThen(() -> gatherer.stopGather()),

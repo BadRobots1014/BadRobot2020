@@ -38,6 +38,7 @@ import frc.robot.Constants.AccessoryConstants;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.commands.AimCommand;
 import frc.robot.commands.AutoDriveExamplePathCommandGroup;
+import frc.robot.commands.AutoDriveForewardCommand;
 import frc.robot.commands.AutoLeftCommand;
 import frc.robot.commands.AutoLeftCornerCommand;
 import frc.robot.commands.AutoMiddleCommand;
@@ -105,6 +106,7 @@ public class RobotContainer {
   private final AutoMiddleCommand m_autoMiddle;
   private final AutoRightCommand m_autoRight;
   private final AutoShootCommand m_autoShoot;
+  private final AutoDriveForewardCommand m_autoMove;
   private final RainbowLedCommand m_defaultLedCommand;
   private HoldPlaceCommand m_holdPlaceCommand;
   private AimCommand m_AutoAimCommand;
@@ -159,6 +161,7 @@ public class RobotContainer {
     m_autoMiddle = new AutoMiddleCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
     m_autoRight = new AutoRightCommand(m_driveTrain, m_shooterSubsystem, m_gathererSubsystem, m_magSubsystem);
     m_autoShoot = new AutoShootCommand(m_driveTrain, m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem);
+    m_autoMove = new AutoDriveForewardCommand(m_driveTrain, m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem);
     // Configure SmartDashboard Tabs
     configureAutonomousTab();
 
@@ -315,8 +318,9 @@ public class RobotContainer {
     m_autonomousChooser.addOption("Far Left", m_autoLeftCorner);
     m_autonomousChooser.addOption("Left", m_autoLeft);
     m_autonomousChooser.addOption("Middle", m_autoMiddle);
-    m_autonomousChooser.addOption("Right", m_autoRight);
+    //m_autonomousChooser.addOption("Right", m_autoRight);
     m_autonomousChooser.addOption("Shoot", m_autoShoot);
+    m_autonomousChooser.addOption("Drive Foreward", m_autoMove);
     m_autonomousChooser.addOption("Hold Place", new PrintCommand("Not doing anything for auton"));
 
 

@@ -33,11 +33,11 @@ public class AutoLeftCornerCommand extends SequentialCommandGroup {
     GathererSubsystem gatherer, MagazineSubsystem magazine, GyroProvider gyro) {
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
-    addCommands(new TurnCommand(driveTrain, gyro, -135)
-                .andThen(() -> driveTrain.stop()),
-                new SingleFireCommandGroup(shooter, magazine, gatherer).withTimeout(6.0)
+    addCommands(new SingleFireCommandGroup(shooter, magazine, gatherer).withTimeout(6.0)
                 .andThen(() -> shooter.stopShooter()),
-                new TurnCommand(driveTrain, gyro, 135)
+                //The angle should be tested
+                new TurnCommand(driveTrain, gyro, 155)
+                .andThen(new GathererOutCommand(gatherer))
                 .andThen(() -> driveTrain.stop()), 
                 RamseteUtil.getRamseteCommandForPath("paths/RedLeftCollect.wpilib.json", driveTrain)
                 .raceWith(new GatherCommand(gatherer))

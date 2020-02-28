@@ -38,7 +38,7 @@ public class AutoShootCommand extends SequentialCommandGroup {
                 // .andThen(() -> driveTrain.stop()),
                 // RamseteUtil.getRamseteCommandForPath("paths/Example.wpilib.json", driveTrain)
                 // .andThen(() -> driveTrain.stop())
-                new RunCommand(() -> m_drive.arcadeDrive(.75, 0), m_drive).withTimeout(0.5).andThen(() -> m_drive.stop())
+                new RunCommand(() -> m_drive.arcadeDrive(-.75, 0), m_drive).withTimeout(0.5).andThen(() -> m_drive.stop())
     );
   }
 
