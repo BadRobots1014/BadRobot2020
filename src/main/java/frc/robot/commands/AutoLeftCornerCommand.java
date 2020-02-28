@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.MagazineSubsystem;
 import frc.robot.subsystems.GathererSubsystem;
@@ -33,7 +34,7 @@ public class AutoLeftCornerCommand extends SequentialCommandGroup {
     GathererSubsystem gatherer, MagazineSubsystem magazine, GyroProvider gyro) {
     //m_lights = lights;
     // Before starting, set the pose to 0, -3, because that's where the path starts in the Example that was created.
-    addCommands(new SingleFireCommandGroup(shooter, magazine, gatherer).withTimeout(6.0)
+    addCommands(new ShootContinuousForTimeCommand(gatherer, magazine, shooter, ShooterConstants.kShootThreeBallsTime)
                 .andThen(() -> shooter.stopShooter()),
                 //The angle should be tested
                 new TurnCommand(driveTrain, gyro, 155)

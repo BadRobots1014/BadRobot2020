@@ -25,7 +25,7 @@ import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
   //private final Solenoid m_solenoid = new Solenoid(0);
-  private final DoubleSolenoid m_doubleSolenoid = new DoubleSolenoid(2, 3);
+  private final Solenoid m_Solenoid = new Solenoid(2);
   private final CANSparkMax m_winch = new CANSparkMax(ClimberConstants.kWinchMotor, MotorType.kBrushless);
   //private final ShuffleboardTab m_gathererTab = Shuffleboard.getTab("Climber");
   //private final NetworkTableEntry m_climberState = m_gathererTab.add("Gatherer State", false).getEntry(); // False is gatherer in, true is gatherer out
@@ -35,23 +35,23 @@ public class ClimberSubsystem extends SubsystemBase {
    */
   public ClimberSubsystem() {
     m_winch.restoreFactoryDefaults();
-    m_winch.setInverted(false);
+    m_winch.setInverted(true);
     m_winch.setIdleMode(IdleMode.kBrake);
     //m_winch.setSmartCurrentLimit(ClimberConstants.kCurrentLimit);
   }
 
   public void climberUp() {
-    m_doubleSolenoid.set(Value.kForward);
+    m_Solenoid.set(true);
     m_climberState = true;
   }
 
   public void climberDown() {
-    m_doubleSolenoid.set(Value.kReverse);
+    m_Solenoid.set(false);
     m_climberState = false;
   }
 
   public void climberToggle() {
-    System.out.println("Get State:" + m_doubleSolenoid.get());
+    System.out.println("Get State:" + m_Solenoid.get());
     if (!m_climberState) {
       climberUp();
     } else {

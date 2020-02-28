@@ -1,6 +1,6 @@
 # BadRobot2020
 
-## Controls (Updated 2/27/2020 @ 9:00PM)
+## Controls (Updated 2/28/2020 @ 12:04PM)
 
 ### Driver Controls
 
@@ -28,6 +28,8 @@ LB/Left Bumper (Hold) ----------- Activates Shooter then feeds **POSSIBLY BROKEN
 RB/Right Bumper (Toggle) -------- Gatherer In/Out
 
 Y (Hold) ------------------------ Run magazine toward shooter
+
+B (Hold) ------------------------ Run the shooter continuously
 
 
 ### Manual Attachment Controls (Shouldn't be used unless NEEDED):

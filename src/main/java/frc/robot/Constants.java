@@ -44,7 +44,7 @@ public final class Constants {
         public static final double kStabilizationI = 0.5;
         public static final double kStabilizationD = 0;
 
-        public static final double kMaxSpeed = 3.0; // meters per second
+        public static final double kMaxSpeed = 4.0; // meters per second
         public static final double kMaxAngularSpeed = 3 * Math.PI; // one rotation per second
         public static final double kGathererSpeed = .5;
       
@@ -72,7 +72,7 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public static final int kShooterId = 20;
-        public static final boolean kShooterReversed = true; // Reversed as of late 2/27/2020
+        public static final boolean kShooterReversed = false; // Reversed as of late 2/27/2020
 
         public static final int  kServoActuatorId = 0;
 
@@ -81,21 +81,25 @@ public final class Constants {
         public static final double kP = 0.1;
         public static final double kEncoderConstant = 1.462847143; // multiply desired rpm by this to get encoder units
 
-        public static final double kDesiredAngularSpeed = 5200.00; // encoder units
+        public static final double kDesiredAngularSpeed = 6000.00; // encoder units
         public static final double kDesiredActiveCurrent = 24.00; // in amps
 
-        public static final double kFeedThresholdAngularSpeedDelta = 50.00;
+        public static final double kFeedThresholdAngularSpeedDelta = 25.00;
 
-        public static final double kShootThresholdAngularSpeedDelta = -250; // placeholder value
+        public static final double kShootThresholdAngularSpeedDelta = -50; // placeholder value
         public static final double kShootThresholdActiveCurrentDelta = 4.000;
 
         public static final double kDelay = 1.0;
+
+        public static final double kShootThreeBallsTime = 6.0;
+
+        public static final double kContinuousShootSpinUpTime = 2.0;
     }
 
     public static final class MagazineConstants {
         public static final int kInSensorPort = 0; // Analog input port
         public static final int kOutSensorPort = 1; // Analog input port
-        public static final double kMaxSpeed = 0.5;
+        public static final double kMaxSpeed = 0.35;
         public static final double kSensorThreshold = 300;
         public static final double kDelay = 0.2;
     }
@@ -115,6 +119,6 @@ public final class Constants {
     public static final class ClimberConstants{
         public static final int kWinchMotor = 7;
         public static final int kCurrentLimit = 40;
-        public static final double kWinchSpeed = 0.5;
+        public static final double kWinchSpeed = 1;
     }
 }

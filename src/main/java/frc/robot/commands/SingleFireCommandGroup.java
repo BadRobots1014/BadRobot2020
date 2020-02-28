@@ -51,15 +51,7 @@ public class SingleFireCommandGroup extends ParallelDeadlineGroup {
           }
         }),
         new ParallelDeadlineGroup(
-          new WaitUntilCommand(() -> { // This is sus.
-            if (shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta // should be negative
-            //&& m_shooterSubsystem.getDeltaDesiredActiveCurrent() >= ShooterConstants.kShootThresholdActiveCurrentDelta
-            ) {
-              return true;
-            } else {
-              return false;
-            }
-          }),//.withTimeout(6.0)
+          new WaitUntilCommand(() -> { return shooterSubsystem.getDeltaDesiredVelocity() <= ShooterConstants.kShootThresholdAngularSpeedDelta; }),//.withTimeout(6.0)
           new RunMagazineMotorCommand(magSubsystem).withTimeout(1.0)
           // new SequentialCommandGroup(
           //   new WaitCommand(2.0),)
@@ -69,14 +61,14 @@ public class SingleFireCommandGroup extends ParallelDeadlineGroup {
           //   ),
           //   new GatherCommand(gathererSubsystem)
           // ),
-        ),
-        new WaitCommand(ShooterConstants.kDelay) // Do we need this or can it do without?
+        )//.withTimeout(3.0)//,
+        // new WaitCommand(0.5) // Do we need this or can it do without?
       ),
       new SequentialCommandGroup( // Make sequential: cannot use a subsystem in two places at once
         new GathererOutCommand(gathererSubsystem),
-        new RunCommand(() -> gathererSubsystem.stopGather(), gathererSubsystem) // IF this doesn't override the default command...
+        new RunCommand(gathererSubsystem::stopGather, gathererSubsystem) // IF this doesn't override the default command...
       ),
-      new RunShooterCommand(shooterSubsystem)
+      new RunCommand(shooterSubsystem::runShooter, shooterSubsystem)
     );
   }
 }

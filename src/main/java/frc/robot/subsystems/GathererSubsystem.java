@@ -31,7 +31,7 @@ public class GathererSubsystem extends SubsystemBase {
 
   public boolean isGathererOut() {
     boolean gathererState = m_doubleSolenoid.get() == Value.kReverse;
-    System.out.println("Gatherer is out:" + gathererState);
+    //System.out.println("Gatherer is out:" + gathererState);
     return gathererState;
   }
 

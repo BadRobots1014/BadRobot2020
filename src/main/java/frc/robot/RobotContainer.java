@@ -57,6 +57,8 @@ import frc.robot.commands.RunGathererReversedCommand;
 import frc.robot.commands.RunMagazineMotorCommand;
 import frc.robot.commands.RunMagazineReversedCommand;
 import frc.robot.commands.RunShooterCommand;
+import frc.robot.commands.ShootContinuousCommand;
+import frc.robot.commands.ShootContinuousForTimeCommand;
 import frc.robot.commands.SingleFireCommandGroup;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.commands.TurnCommand;
@@ -265,6 +267,9 @@ public class RobotContainer {
 
     new JoystickButton(m_attachmentsController, Button.kX.value)
     .whenHeld(new RunMagazineReversedCommand(m_magSubsystem));
+
+    new JoystickButton(m_attachmentsController, Button.kB.value)
+    .whenHeld(new ShootContinuousCommand(m_gathererSubsystem, m_magSubsystem, m_shooterSubsystem));
 
     // Unjam Shooter
     DoubleSupplier leftYJoystick = () -> m_attachmentsController.getY(Hand.kLeft);
