@@ -66,6 +66,10 @@ public class ClimberSubsystem extends SubsystemBase {
     m_winch.set(ClimberConstants.kWinchSpeed);
   }
 
+  public void runWinchReverse(){
+    m_winch.set(-(ClimberConstants.kWinchSpeed));
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

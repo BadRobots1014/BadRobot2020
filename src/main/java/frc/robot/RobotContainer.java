@@ -46,6 +46,7 @@ import frc.robot.commands.AutoRightCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.BumpCommand;
 import frc.robot.commands.ClimberCommand;
+import frc.robot.commands.ClimberReverseCommand;
 import frc.robot.commands.ControlShooterCommand;
 import frc.robot.commands.ExtendShooterHoodCommand;
 import frc.robot.commands.GatherCommand;
@@ -202,6 +203,9 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController, Button.kBumperLeft.value)
     .whenPressed(new BumpCommand(m_driveTrain));
+    
+    new JoystickButton(m_driverController, Button.kA.value)
+    .whenHeld(new ClimberReverseCommand(m_climberSubsystem));
 
     new JoystickButton(m_driverController, Button.kBumperRight.value)
     .whenPressed(new BumpCommand(m_driveTrain));
@@ -230,8 +234,9 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kY.value)
     .whenHeld(m_shootCommand);
     
-    new JoystickButton(m_driverController, Button.kA.value)
-    .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
+    // new JoystickButton(m_driverController, Button.kA.value)
+    // .whenHeld(new SingleFireCommandGroup(m_shooterSubsystem, m_magSubsystem, m_gathererSubsystem));
+
   }
 
   private void configureAttachmentControls()
