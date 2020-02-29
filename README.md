@@ -12,7 +12,7 @@ Left Joystick Up/Down ----------- Forward/Backward
 
 Right Joystick Left/Right ------- Turning
 
-X (Hold) ------------------------ Auto Aims (Only used when already facing in the general direction of the target - the camera needs to be able to see it) **NEEDS CALIBRATION**
+X (click) ------------------------ Gatherer reverse
 
 Y (Hold) ------------------------ Holds Position (Useful when shooting. Ensures that the robot stays in current orientation.)
 

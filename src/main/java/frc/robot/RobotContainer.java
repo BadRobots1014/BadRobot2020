@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -199,6 +200,7 @@ public class RobotContainer {
     DoubleSupplier leftYJoystick = () -> m_driverController.getY(Hand.kLeft);
     DoubleSupplier rightJoystick = () -> m_driverController.getX(Hand.kRight);
     BooleanSupplier driverQuickTurn = () -> m_driverController.getTriggerAxis(Hand.kLeft) > 0;
+    BooleanSupplier driverDivertBalls = () -> m_driverController.getTriggerAxis(Hand.kLeft) > 0.5;
     m_teleopDriveCommand.setControllerSupplier(leftYJoystick, rightJoystick, driverQuickTurn);
 
     new JoystickButton(m_driverController, Button.kBumperLeft.value)
@@ -211,8 +213,12 @@ public class RobotContainer {
     .whenPressed(new BumpCommand(m_driveTrain));
 
     //AutoAim Command
+    //new JoystickButton(m_driverController, Button.kX.value)
+    //.whileHeld(m_AutoAimCommand);
+
     new JoystickButton(m_driverController, Button.kX.value)
-    .whileHeld(m_AutoAimCommand);
+    .whenPressed(new RunGathererReversedCommand(m_gathererSubsystem))
+    .whenReleased(new GatherCommand(m_gathererSubsystem));
 
     new JoystickButton(m_driverController, Button.kB.value)
     .whileHeld(m_holdPlaceCommand);
@@ -223,6 +229,8 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController, Button.kStart.value)
     .whenPressed(() -> m_climberSubsystem.climberToggle(), m_climberSubsystem);
+
+    m_gathererSubsystem.setTriggerSupplier(driverDivertBalls); // Test this!
 
   }
 
@@ -286,8 +294,10 @@ public class RobotContainer {
     BooleanSupplier rightTrigger = () -> m_attachmentsController.getTriggerAxis(Hand.kRight) > 0.5;
     m_shooterSubsystem.setJoystickSupplier(rightYJoystick, rightTrigger);
 
+    // new JoystickButton(m_attachmentsController, Button.kBumperLeft.value)
+    // .whileHeld(m_singleFireCommand);
     new JoystickButton(m_attachmentsController, Button.kBumperLeft.value)
-    .whileHeld(m_singleFireCommand);
+    .whenHeld(new SequentialCommandGroup(new GathererOutCommand(m_gathererSubsystem), new RunShooterCommand(m_shooterSubsystem)));
 
     /*
     new JoystickButton(m_attachmentsController, Button.kX.value)

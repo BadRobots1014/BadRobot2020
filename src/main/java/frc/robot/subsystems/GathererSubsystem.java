@@ -8,6 +8,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -20,6 +23,8 @@ public class GathererSubsystem extends SubsystemBase {
 
   private final TalonSRX m_gatherer;
 
+  private BooleanSupplier m_driverTrigger = () -> false;
+
   /**
    * Creates a new ExampleSubsystem.
    */
@@ -27,6 +32,10 @@ public class GathererSubsystem extends SubsystemBase {
     m_gatherer = talon;
     m_gatherer.setInverted(true);
 
+  }
+
+  public void setTriggerSupplier(BooleanSupplier trigger) {
+    m_driverTrigger = trigger;
   }
 
   public boolean isGathererOut() {
@@ -57,8 +66,10 @@ public class GathererSubsystem extends SubsystemBase {
 
   public void runGatherer() { // Run gatherer now only works if the gatherer is out.
                               // We only ever want to run the gatherer while it is out
-    if (isGathererOut()) {
+    if (isGathererOut() && !m_driverTrigger.getAsBoolean()) {
       m_gatherer.set(ControlMode.PercentOutput, kGathererSpeed);
+    } else if (isGathererOut() && m_driverTrigger.getAsBoolean()) {
+      m_gatherer.set(ControlMode.PercentOutput, -kGathererSpeed);
     } else {
       m_gatherer.set(ControlMode.PercentOutput, 0);
     }
