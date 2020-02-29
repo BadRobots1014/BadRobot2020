@@ -76,8 +76,8 @@ public class TeleopDriveCommand extends CommandBase {
     double zRotation = m_rightDoubleSupplier.getAsDouble();
     boolean quickTurn = m_quickTurnSupplier.getAsBoolean();
     
-    //arcadeDrive(xSpeed, zRotation);
-    curvatureDrive(xSpeed, zRotation, quickTurn);
+    arcadeDrive(xSpeed, zRotation);
+    //curvatureDrive(xSpeed, zRotation, quickTurn);
   }
 
   private void curvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn) {
